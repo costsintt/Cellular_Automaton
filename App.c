@@ -38,6 +38,8 @@ void App_init(struct App* self)
     self->cellWidth = self->screenWidth * 1.0 / self->cam->viewWidth;
 
     self->ticksPassedToTheLatestUpdate = SDL_GetTicks64();
+
+    self->keyboard = SDL_GetKeyboardState(NULL);
 }
 
 
@@ -64,6 +66,7 @@ bool App_updateWindow(struct App* self)
 
 void App_drawBoard(struct App* self, struct Board* board)
 {
+    SDL_SetRenderDrawColor(self->renderer, 255, 255, 255, 255);
     SDL_Rect rect;
     rect.h = self->cellHeight; rect.w = self->cellWidth;
 
@@ -88,4 +91,35 @@ void App_drawBoard(struct App* self, struct Board* board)
         m = 0;
     }
     
+}
+
+
+void App_takeKeyboardInput(struct App* self)
+{
+    unsigned camVel = 1;
+    if(self->keyboard[SDL_SCANCODE_LSHIFT]) camVel = 8;
+    if(self->keyboard[SDL_SCANCODE_W] && self->cam->y >= camVel) self->cam->y -= camVel;
+    if(self->keyboard[SDL_SCANCODE_S]) self->cam->y += camVel;
+    if(self->keyboard[SDL_SCANCODE_A] && self->cam->x >= camVel) self->cam->x -= camVel;
+    if(self->keyboard[SDL_SCANCODE_D]) self->cam->x += camVel;
+}
+
+
+void App_clearWindow(struct App* self)
+{
+    SDL_SetRenderDrawColor(self->renderer, 0, 50, 10, 0);
+    SDL_RenderClear(self->renderer);
+}
+
+
+void App_swapWindowBuffers(struct App* self)
+{
+    SDL_RenderPresent(self->renderer);
+}
+
+
+void App_waitIfNeeded(struct App* self)
+{
+    uint64_t ticksPassed = SDL_GetTicks64() - self->ticksPassedToTheLatestUpdate;
+    SDL_Delay(ticksPassed < self->tickDuration ? self->tickDuration - ticksPassed : 0);
 }

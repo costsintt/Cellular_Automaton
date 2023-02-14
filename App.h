@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #include <SDL.h>
 
@@ -34,6 +35,7 @@ struct App
 
     SDL_Window* window;
     SDL_Renderer* renderer;
+    const uint8_t* keyboard;
 };
 
 
@@ -50,6 +52,20 @@ bool App_updateWindow(struct App* self);
 
 
 void App_drawBoard(struct App* self, struct Board* board);
+
+
+void App_takeKeyboardInput(struct App* self);
+
+
+void App_clearWindow(struct App* self);
+
+
+void App_swapWindowBuffers(struct App* self);
+
+
+void App_waitIfNeeded(struct App* self);
+
+
 
 
 #endif

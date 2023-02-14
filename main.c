@@ -2,6 +2,7 @@
 #include "App.h"
 
 #include <stdlib.h>
+#include <stdint.h>
 
 int main()
 {
@@ -18,28 +19,18 @@ int main()
 
     App_init(app);
 
-    unsigned char* keyboard = SDL_GetKeyboardState(NULL);
-
     while(App_updateWindow(app))
-    {
-        SDL_SetRenderDrawColor(app->renderer, 0, 50, 10, 0);
-        SDL_RenderClear(app->renderer);
-        SDL_SetRenderDrawColor(app->renderer, 255, 255, 255, 255);
+    {   
+        App_takeKeyboardInput(app);
 
-        unsigned camVel = 1;
-        if(keyboard[SDL_SCANCODE_LSHIFT]) camVel = 8;
-        if(keyboard[SDL_SCANCODE_W] && app->cam->y >= camVel) app->cam->y -= camVel;
-        if(keyboard[SDL_SCANCODE_S]) app->cam->y += camVel;
-        if(keyboard[SDL_SCANCODE_A] && app->cam->x >= camVel) app->cam->x -= camVel;
-        if(keyboard[SDL_SCANCODE_D]) app->cam->x += camVel;
-        
-
+        App_clearWindow(app);
         App_drawBoard(app, board);
-        Board_nextIteration(board);
-        SDL_RenderPresent(app->renderer);
+        App_swapWindowBuffers(app);
 
-        unsigned ticksPassed = SDL_GetTicks64() - app->ticksPassedToTheLatestUpdate;
-        SDL_Delay(ticksPassed < app->tickDuration ? app->tickDuration - ticksPassed : 0);
+        Board_nextIteration(board);
+        
+        App_waitIfNeeded(app);
     }
+    
    return 0;
 }
