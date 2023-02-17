@@ -1,6 +1,9 @@
 #include "App.h"
 
-
+static void button_event(kiss_button *button, SDL_Event *e, int *draw, bool *pauseGame)
+{
+    if (kiss_button_event(button, e, draw)) *pauseGame ^= 1;
+}
 struct App* App_cons(size_t screenHeight, size_t screenWidth, unsigned tickDuration)
 {
     struct App* app = calloc(1, sizeof(struct App));
@@ -24,22 +27,23 @@ void App_decons(struct App** app)
 
 void App_init(struct App* self)
 {
-    if(SDL_Init(SDL_INIT_EVERYTHING) != 0)
-    {
-        printf("error initializing SDL: %s\n", SDL_GetError());
-    }
-
-    self->window = SDL_CreateWindow(APP_WINDOW_NAME, APP_WINDOW_DEFAULT_X, APP_WINDOW_DEFAULT_Y,
-                                    self->screenWidth, self->screenHeight,
-                                    SDL_WINDOW_SHOWN);
-    self->renderer =  SDL_CreateRenderer(self->window, -1, 0);
+    kiss_array_new(&(self->objects));
 
     self->cellHeight = self->screenHeight * 1.0 / self->cam->viewHeight;
     self->cellWidth = self->screenWidth * 1.0 / self->cam->viewWidth;
 
+    self->renderer = kiss_init("Hello kiss_sdl", &(self->objects), 520, 500);
+
+    kiss_window_new(&(self->main_window), NULL, 0, 100, 100,
+                    self->cellWidth * 30, self->cellHeight * 30);
+
+    kiss_button_new(&(self->main_pauseButton), &(self->main_window), "Pause", 50, 50);
+
     self->ticksPassedToTheLatestUpdate = SDL_GetTicks64();
 
     self->keyboard = SDL_GetKeyboardState(NULL);
+
+    self->pauseGame = false;
 }
 
 
@@ -47,7 +51,9 @@ bool App_updateWindow(struct App* self)
 {
     SDL_Event event;
     while (SDL_PollEvent(&event))
-    { 
+    {
+        kiss_window_event(&(self->main_window), &event, &(self->draw));
+        button_event(&(self->main_pauseButton), &event, &(self->draw), &(self->pauseGame));
         switch (event.type)
         {
             case SDL_QUIT:
@@ -82,9 +88,12 @@ void App_drawBoard(struct App* self, struct Board* board)
     {
         for(size_t j = self->cam->x; j < max_j; j++)
         {         
-            rect.x = m * self->cellWidth;
-            rect.y = n * self->cellHeight;
-            if(board->grid[i][j]) SDL_RenderFillRect(self->renderer, &rect);
+            rect.x = self->main_window.rect.x + m * self->cellWidth;
+            rect.y = self->main_window.rect.y + n * self->cellHeight;
+            if(rect.x < (self->main_window.rect.x + self->main_window.rect.w) &&
+               rect.y < (self->main_window.rect.y + self->main_window.rect.h) &&
+               board->grid[i][j])
+                SDL_RenderFillRect(self->renderer, &rect);
             m++;
         }
         n++;

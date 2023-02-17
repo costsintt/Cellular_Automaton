@@ -7,6 +7,7 @@
 
 #include <SDL.h>
 
+#include "kiss_sdl.h"
 #include "Camera.h"
 #include "Board.h"
 
@@ -33,9 +34,16 @@ struct App
     unsigned tickDuration;
     unsigned ticksPassedToTheLatestUpdate; //derived
 
-    SDL_Window* window;
+    SDL_Window* sdlWindow;
     SDL_Renderer* renderer;
     const uint8_t* keyboard;
+
+    kiss_array objects;
+    kiss_window main_window;
+    kiss_button main_pauseButton;
+
+    int draw;
+    bool pauseGame;
 };
 
 
