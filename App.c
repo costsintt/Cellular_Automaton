@@ -37,9 +37,8 @@ void App_init(struct App* self)
     kiss_window_new(&(self->main_window), NULL, 0, 0, 0,
                     self->screenWidth, self->screenHeight);
 
-    kiss_button_new(&(self->main_pauseButton), &(self->main_window), "Pause",
-                    self->main_window.rect.x + self->main_window.rect.w / 2,
-                    self->main_window.rect.y + 6 * self->main_window.rect.h / 7);
+    kiss_button_new(&(self->main_pauseButton), &(self->main_window),
+                    0, 0, 50, 50, 8, 1.0);
 
     self->ticksPassedToTheLatestUpdate = SDL_GetTicks64();
 
@@ -56,13 +55,19 @@ bool App_updateWindow(struct App* self)
     {
         kiss_window_event(&(self->main_window), &event, &(self->draw));
         button_event(&(self->main_pauseButton), &event, &(self->draw), &(self->pauseBoardIter));
-        switch (event.type)
+        if(event.type == SDL_QUIT)
         {
-            case SDL_QUIT:
-            {
-                return false;
-                break;
-            }
+            return false;
+            break;
+        }
+        else if(event.window.event == SDL_WINDOWEVENT_RESIZED)
+        {
+            self->screenWidth = event.window.data1;
+            self->screenHeight = event.window.data2;
+            self->main_window.rect.w = self->screenWidth;
+            self->main_window.rect.h = self->screenHeight;
+            kiss_button_resize(&(self->main_pauseButton));
+            kiss_button_relocate(&(self->main_pauseButton));
         }
     }
 

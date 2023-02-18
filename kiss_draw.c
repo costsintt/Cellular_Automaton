@@ -28,7 +28,10 @@
 kiss_font kiss_textfont, kiss_buttonfont;
 kiss_image kiss_normal, kiss_prelight, kiss_active, kiss_bar,
 	kiss_up, kiss_down, kiss_left, kiss_right, kiss_vslider,
-	kiss_hslider, kiss_selected, kiss_unselected, kiss_combo;
+	kiss_hslider, kiss_selected, kiss_unselected, kiss_combo,
+	
+	kiss_pauseButtonNormal, kiss_pauseButtonPreLight, kiss_pauseButtonActive;
+
 int kiss_screen_width, kiss_screen_height;
 int kiss_textfont_size = 15;
 int kiss_buttonfont_size = 12;
@@ -194,7 +197,7 @@ SDL_Renderer* kiss_init(char* title, kiss_array *a, int w, int h)
 	TTF_Init();
 	kiss_array_new(a);
 	window = SDL_CreateWindow(title, srect.w / 2 - w / 2, srect.h / 2 - h / 2, w, h,
-	                          SDL_WINDOW_SHOWN);
+	                          SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 	if(window) kiss_array_append(a, WINDOW_TYPE, window);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if(renderer) kiss_array_append(a, RENDERER_TYPE, renderer);
@@ -227,6 +230,12 @@ SDL_Renderer* kiss_init(char* title, kiss_array *a, int w, int h)
 	r += kiss_image_new(&kiss_selected, "../images/kiss_selected.png",
 	                    a, renderer);
 	r += kiss_image_new(&kiss_unselected, "../images/kiss_unselected.png",
+	                    a, renderer);
+	r += kiss_image_new(&kiss_pauseButtonActive, "../images/pauseButtonSelected.png",
+	                    a, renderer);
+	r += kiss_image_new(&kiss_pauseButtonNormal, "../images/pauseButtonNormal.png",
+	                    a, renderer);
+	r += kiss_image_new(&kiss_pauseButtonPreLight, "../images/pauseButtonSelected.png",
 	                    a, renderer);
 	if (r)
 	{

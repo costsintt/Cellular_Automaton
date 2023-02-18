@@ -100,27 +100,56 @@ int kiss_label_draw(kiss_label *label, SDL_Renderer *renderer)
 	return 1;
 }
 
-int kiss_button_new(kiss_button *button, kiss_window *wdw, char *text,
-	int x, int y)
+void kiss_button_relocate(kiss_button* button)
 {
-	if (!button || !text) return -1;
-	if (button->font.magic != KISS_MAGIC) button->font = kiss_buttonfont;
-	if (button->normalimg.magic != KISS_MAGIC)
-		button->normalimg = kiss_normal;
-	if (button->activeimg.magic != KISS_MAGIC)
-		button->activeimg = kiss_active;
-	if (button->prelightimg.magic != KISS_MAGIC)
-		button->prelightimg = kiss_prelight;
-	kiss_makerect(&button->rect, x, y, button->normalimg.w, button->normalimg.h);
-	button->textcolor = kiss_white;
-	kiss_string_copy(button->text, KISS_MAX_LENGTH, text, NULL);
-	button->textx = x + button->normalimg.w / 2 - kiss_textwidth(button->font, text, NULL) / 2;
-	button->texty = y + button->normalimg.h / 2 - button->font.fontheight / 2;
+	if(button->wdw)
+	{
+		button->rect.x = button->wdw->rect.w * button->relX / 100 - button->rect.w / 2;
+		button->rect.y = button->wdw->rect.h * button->relY / 100 - button->rect.h / 2;
+	}
+}
+
+void kiss_button_resize(kiss_button* button)
+{
+	if(button->wdw)
+	{
+		button->rect.h = button->wdw->rect.h * button->relS / 100;
+		button->rect.w = button->hInW * button->rect.h;
+		
+		button->normalimg.h = button->rect.h;
+		button->normalimg.w = button->rect.w;
+		
+		button->activeimg.h = button->rect.h;
+		button->activeimg.w = button->rect.w;
+		
+		button->prelightimg.h = button->rect.h;
+		button->prelightimg.w = button->rect.w;
+	}
+}
+
+int kiss_button_new(kiss_button *button, kiss_window *wdw,
+	int x, int y, int relX, int relY, int relS, float hInW)
+{
+	if (!button) return -1;
+	button->wdw = wdw;
+
+	button->relX = relX;
+	button->relY = relY;
+	button->relS = relS;
+	button->hInW = hInW;
+	
+	button->normalimg = kiss_pauseButtonNormal;
+	button->activeimg = kiss_pauseButtonActive;
+	button->prelightimg = kiss_pauseButtonPreLight;
+
+	kiss_button_relocate(button);
+	kiss_button_resize(button);
+	
 	button->active = 0;
 	button->prelight = 0;
 	button->visible = 0;
 	button->focus = 0;
-	button->wdw = wdw;
+	kiss_button_relocate(button);
 	return 0;
 }
 
@@ -174,8 +203,6 @@ int kiss_button_draw(kiss_button *button, SDL_Renderer *renderer)
 		kiss_renderimage(renderer, button->prelightimg, button->rect.x, button->rect.y, NULL);
 	else
 		kiss_renderimage(renderer, button->normalimg, button->rect.x, button->rect.y, NULL);
-	kiss_rendertext(renderer, button->text, button->textx, button->texty,
-	                button->font, button->textcolor);
 	return 1;
 }
 

@@ -133,21 +133,25 @@ typedef struct kiss_button
 {
 	int visible;
 	int focus;
-	SDL_Rect rect;
-	int textx;
-	int texty;
-	char text[KISS_MAX_LENGTH];
+	SDL_Rect rect; //derived
 	int active;
 	int prelight;
-	SDL_Color textcolor;
-	kiss_font font;
 	kiss_image normalimg;
 	kiss_image activeimg;
 	kiss_image prelightimg;
+	
 	kiss_window *wdw;
+
+	float hInW; //how many times w is large than h
+	//from 0 to 100
+	int relX;
+	int relY;
+	int relS;
+
 } kiss_button;
 
-typedef struct kiss_selectbutton {
+typedef struct kiss_selectbutton
+{
 	int visible;
 	int focus;
 	SDL_Rect rect;
@@ -265,7 +269,8 @@ extern SDL_Color kiss_white, kiss_black, kiss_green, kiss_blue,
 extern kiss_font kiss_textfont, kiss_buttonfont;
 extern kiss_image kiss_normal, kiss_prelight, kiss_active, kiss_bar,
 	kiss_up, kiss_down, kiss_left, kiss_right, kiss_vslider,
-	kiss_hslider, kiss_selected, kiss_unselected, kiss_combo;
+	kiss_hslider, kiss_selected, kiss_unselected, kiss_combo,
+	kiss_pauseButtonNormal, kiss_pauseButtonPreLight, kiss_pauseButtonActive;
 extern double kiss_spacing;
 extern int kiss_textfont_size, kiss_buttonfont_size;
 extern int kiss_click_interval, kiss_progress_interval;
@@ -324,8 +329,10 @@ int kiss_window_draw(kiss_window *window, SDL_Renderer *renderer);
 int kiss_label_new(kiss_label *label, kiss_window *wdw, char *text,
 	int x, int y);
 int kiss_label_draw(kiss_label *label, SDL_Renderer *renderer);
-int kiss_button_new(kiss_button *button, kiss_window *wdw, char *text,
-	int x, int y);
+void kiss_button_relocate(kiss_button* button);
+void kiss_button_resize(kiss_button* button);
+int kiss_button_new(kiss_button *button, kiss_window *wdw,
+	int x, int y, int relX, int relY, int relS, float hInW);
 int kiss_button_event(kiss_button *button, SDL_Event *event, int *draw);
 int kiss_button_draw(kiss_button *button, SDL_Renderer *renderer);
 int kiss_selectbutton_new(kiss_selectbutton *selectbutton, kiss_window *wdw,

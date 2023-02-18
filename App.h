@@ -21,8 +21,8 @@
 
 struct App
 {
-    size_t screenHeight;
-    size_t screenWidth;
+    int screenHeight;
+    int screenWidth;
 
     // float cellHeightInPix; //derived 
     // float cellWidthInPix; //derived

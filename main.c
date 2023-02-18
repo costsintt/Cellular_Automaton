@@ -24,7 +24,7 @@ int main()
     App_init(app);
     (app->main_window).visible = 1;
     (app->main_window).bg = kiss_green;
-    app->main_pauseButton.rect.w = 500;
+    
     while(App_updateWindow(app))
     {   
         App_takeKeyboardInput(app, board);
