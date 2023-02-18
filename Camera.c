@@ -1,13 +1,14 @@
 #include "Camera.h"
 
 
-struct Camera* Camera_cons(size_t viewHeight, size_t viewWidth, size_t x, size_t y)
+struct Camera* Camera_cons(size_t viewHeightInCells, size_t viewWidthInCells,
+                           size_t xInCells, size_t yInCells)
 {
     struct Camera* cam = calloc(1, sizeof(struct Camera));
-    cam->viewHeight = viewHeight;
-    cam->viewWidth = viewWidth;
-    cam->x = x;
-    cam->y = y;
+    cam->viewHeightInCells = viewHeightInCells;
+    cam->viewWidthInCells = viewWidthInCells;
+    cam->xInCells = xInCells;
+    cam->yInCells = yInCells;
 
     return cam;
 }

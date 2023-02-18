@@ -7,25 +7,24 @@
 
 #include "kiss_sdl.h"
 
+#define BOARD_DEFAULT_WIDTH 150
+#define BOARD_DEFAULT_HEIGHT 150
+
 int main()
 {
-
-    struct Board* board = Board_cons(150, 150, 0, 1);
+    struct Board* board = Board_cons(BOARD_DEFAULT_HEIGHT, BOARD_DEFAULT_WIDTH, 0, 1);
     Board_fillRandom(board, 0, 2);
-    board->grid[0][0] = 0;
-    board->grid[board->shape[0] - 1][board->shape[1] - 1] = 0;
 
-    struct App* app = App_cons(500, 800, 100);
-    app->cam->x = 20;
-    app->cam->y = 20;
-    app->cam->viewHeight = 130;
-    app->cam->viewWidth = 130;
+    struct App* app = App_cons(500, 700, 100);
+    app->cam->viewHeightInCells = 100;
+    app->cam->viewWidthInCells = 100;
 
 
 
     App_init(app);
     (app->main_window).visible = 1;
     (app->main_window).bg = kiss_green;
+    app->main_pauseButton.rect.w = 500;
     while(App_updateWindow(app))
     {   
         App_takeKeyboardInput(app);
@@ -36,7 +35,7 @@ int main()
         App_drawBoard(app, board);
         App_swapWindowBuffers(app);
 
-        if(!app->pauseGame) Board_nextIteration(board);
+        if(!app->pauseBoardIter) Board_nextIteration(board);
         
         App_waitIfNeeded(app);
     }

@@ -18,6 +18,7 @@
 
   kiss_sdl version 1.2.0
 */
+//It is an altered source version.
 
 #ifndef _kiss_sdl_h
 #define _kiss_sdl_h

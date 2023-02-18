@@ -14,11 +14,9 @@
 
 #define APP_CAMERA_DEFAULT_X 0
 #define APP_CAMERA_DEFAULT_Y 0
-#define APP_CAMERA_DEFAULT_VIEWHEIGHT 25
-#define APP_CAMERA_DEFAULT_VIEWWIDTH 40
+#define APP_CAMERA_DEFAULT_VIEWHEIGHTINCELLS 5
+#define APP_CAMERA_DEFAULT_VIEWWIDTHINCELLS 5
 #define APP_WINDOW_NAME "lololo"
-#define APP_WINDOW_DEFAULT_X 150
-#define APP_WINDOW_DEFAULT_Y 150
 
 
 struct App
@@ -26,8 +24,9 @@ struct App
     size_t screenHeight;
     size_t screenWidth;
 
-    float cellHeight; //derived
-    float cellWidth; //derived
+    // float cellHeightInPix; //derived 
+    // float cellWidthInPix; //derived
+    //depricated; now they evaluated in draw function every frame.
 
     struct Camera* cam;
 
@@ -42,8 +41,8 @@ struct App
     kiss_window main_window;
     kiss_button main_pauseButton;
 
-    int draw;
-    bool pauseGame;
+    int draw; //make it bool
+    bool pauseBoardIter;
 };
 
 

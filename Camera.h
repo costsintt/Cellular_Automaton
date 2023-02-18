@@ -6,16 +6,16 @@
 
 struct Camera
 {
-    size_t viewHeight;
-    size_t viewWidth;
+    size_t viewHeightInCells;
+    size_t viewWidthInCells;
 
-    size_t x;
-    size_t y;
+    size_t xInCells;
+    size_t yInCells;
 
 };
 
-
-struct Camera* Camera_cons(size_t viewHeight, size_t viewWidth, size_t x, size_t y);
+struct Camera* Camera_cons(size_t viewHeightInCells, size_t viewWidthInCells,
+                           size_t xInCells, size_t yInCells);
 
 
 void Camera_decons(struct Camera** cam);

@@ -21,6 +21,7 @@
 
   kiss_sdl version 1.2.4
 */
+//It is an altered source version.
 
 #include "kiss_sdl.h"
 
