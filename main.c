@@ -27,7 +27,7 @@ int main()
     app->main_pauseButton.rect.w = 500;
     while(App_updateWindow(app))
     {   
-        App_takeKeyboardInput(app);
+        App_takeKeyboardInput(app, board);
 
         App_clearWindow(app);
         kiss_window_draw(&(app->main_window), app->renderer);

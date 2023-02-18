@@ -107,14 +107,20 @@ void App_drawBoard(struct App* self, struct Board* board)
 }
 
 
-void App_takeKeyboardInput(struct App* self)
+void App_takeKeyboardInput(struct App* self, struct Board* board)
 {
     unsigned camVel = 1;
     if(self->keyboard[SDL_SCANCODE_LSHIFT]) camVel = 8;
-    if(self->keyboard[SDL_SCANCODE_W] && self->cam->yInCells >= camVel) self->cam->yInCells -= camVel;
-    if(self->keyboard[SDL_SCANCODE_S]) self->cam->yInCells += camVel;
-    if(self->keyboard[SDL_SCANCODE_A] && self->cam->xInCells >= camVel) self->cam->xInCells -= camVel;
-    if(self->keyboard[SDL_SCANCODE_D]) self->cam->xInCells += camVel;
+    if(self->keyboard[SDL_SCANCODE_W] && self->cam->yInCells >= camVel)
+        self->cam->yInCells -= camVel;
+    if(self->keyboard[SDL_SCANCODE_S] &&
+       self->cam->yInCells + self->cam->viewHeightInCells + camVel <= board->shape[0])
+        self->cam->yInCells += camVel;
+    if(self->keyboard[SDL_SCANCODE_A] && self->cam->xInCells >= camVel)
+        self->cam->xInCells -= camVel;
+    if(self->keyboard[SDL_SCANCODE_D] &&
+       self->cam->xInCells + self->cam->viewWidthInCells + camVel <= board->shape[1])
+        self->cam->xInCells += camVel;
 }
 
 
