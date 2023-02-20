@@ -22,16 +22,18 @@ int main()
 
 
     App_init(app);
-    (app->main_window).visible = 1;
-    (app->main_window).bg = kiss_green;
+    app->main_window.base.visible = 1;
+    app->buttonsWindow.base.visible = 1;
+    app->main_window.bg = kiss_green;
     
     while(App_updateWindow(app))
     {   
         App_takeKeyboardInput(app, board);
 
         App_clearWindow(app);
-        kiss_window_draw(&(app->main_window), app->renderer);
-        kiss_button_draw(&(app->main_pauseButton), app->renderer);
+        kiss_window_draw(&app->main_window, app->renderer);
+        kiss_window_draw(&app->buttonsWindow, app->renderer);
+        kiss_button_draw(&app->main_pauseButton, app->renderer);
         App_drawBoard(app, board);
         App_swapWindowBuffers(app);
 

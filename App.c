@@ -31,14 +31,18 @@ void App_init(struct App* self)
 {
     kiss_array_new(&(self->objects));
 
-    self->renderer = kiss_init(APP_WINDOW_NAME, &(self->objects),
+    self->renderer = kiss_init(APP_WINDOW_NAME, &self->objects,
                                self->screenWidth, self->screenHeight);
 
-    kiss_window_new(&(self->main_window), NULL, 0, 0, 0,
-                    self->screenWidth, self->screenHeight);
+    kiss_window_new(&(self->main_window), NULL, 0,
+                    0, 0, 0, 0,
+                    0, 0, self->screenWidth, self->screenHeight);
+    kiss_window_new(&(self->buttonsWindow), &self->main_window, 0, 50, 97, 5, 10.0, 0, 0, 0, 0);
+    self->buttonsWindow.bg = kiss_blue;
 
-    kiss_button_new(&(self->main_pauseButton), &(self->main_window),
-                    0, 0, 50, 50, 8, 1.0);
+    kiss_button_new(&self->main_pauseButton, &self->buttonsWindow,
+                    50, 50, 100, 1.0,
+                    kiss_pauseButtonNormal, kiss_pauseButtonActive, kiss_pauseButtonPreLight);
 
     self->ticksPassedToTheLatestUpdate = SDL_GetTicks64();
 
@@ -64,10 +68,16 @@ bool App_updateWindow(struct App* self)
         {
             self->screenWidth = event.window.data1;
             self->screenHeight = event.window.data2;
-            self->main_window.rect.w = self->screenWidth;
-            self->main_window.rect.h = self->screenHeight;
-            kiss_button_resize(&(self->main_pauseButton));
-            kiss_button_relocate(&(self->main_pauseButton));
+            self->main_window.base.rect.w = self->screenWidth;
+            self->main_window.base.rect.h = self->screenHeight;
+
+            kiss_genResize((kiss_genData*)&self->buttonsWindow);
+            kiss_genRelocate((kiss_genData*)&self->buttonsWindow);
+
+            kiss_genResize((kiss_genData*)&self->main_pauseButton);
+            kiss_genRelocate((kiss_genData*)&self->main_pauseButton);
+
+            
         }
     }
 
@@ -82,10 +92,10 @@ void App_drawBoard(struct App* self, struct Board* board)
     SDL_SetRenderDrawColor(self->renderer, 255, 255, 255, 255);
     SDL_Rect rect;
     
-    float cellHeight = (float)self->main_window.rect.h / self->cam->viewHeightInCells;
-    float cellWidth = (float)self->main_window.rect.w / self->cam->viewWidthInCells;
-    float x = (float)self->main_window.rect.x;
-    float y = (float)self->main_window.rect.y;
+    float cellHeight = (float)self->main_window.base.rect.h / self->cam->viewHeightInCells;
+    float cellWidth = (float)self->main_window.base.rect.w / self->cam->viewWidthInCells;
+    float x = (float)self->main_window.base.rect.x;
+    float y = (float)self->main_window.base.rect.y;
 
     size_t max_i = self->cam->yInCells + self->cam->viewHeightInCells;
     size_t max_j = self->cam->xInCells + self->cam->viewWidthInCells;
@@ -106,7 +116,7 @@ void App_drawBoard(struct App* self, struct Board* board)
             x += cellWidth;
         }
         y += (float)cellHeight;
-        x = (float)self->main_window.rect.x;
+        x = (float)self->main_window.base.rect.x;
     }
     
 }

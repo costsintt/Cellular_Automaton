@@ -176,7 +176,7 @@ int main(int argc, char **argv)
 	select1.selected = 1;
 	hscrollbar.step = 0.;
 	/* Do that, and all widgets associated with the window will show */
-	window.visible = 1;
+	window.base.visible = 1;
 
 	while (!quit) {
 

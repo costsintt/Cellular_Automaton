@@ -39,6 +39,7 @@ struct App
 
     kiss_array objects;
     kiss_window main_window;
+    kiss_window buttonsWindow;
     kiss_button main_pauseButton;
 
     int draw; //make it bool

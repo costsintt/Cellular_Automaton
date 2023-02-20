@@ -28,7 +28,7 @@ int main(void)
     label.textcolor.r = 100;
     kiss_button_new(&button, &window, "OK",
     window.rect.w / 2 - kiss_normal.w / 2, label.rect.y + kiss_textfont.fontheight + kiss_normal.h);
-    window.visible = 1;
+    window.base.visible = 1;
 
     while (!quit) 
     {

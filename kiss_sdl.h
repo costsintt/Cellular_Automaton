@@ -58,7 +58,7 @@
 #define KISS_MAGIC 12345
 
 enum {OTHER_TYPE, WINDOW_TYPE, RENDERER_TYPE, TEXTURE_TYPE, SURFACE_TYPE,
-	FONT_TYPE, STRING_TYPE, ARRAY_TYPE};
+	FONT_TYPE, STRING_TYPE, ARRAY_TYPE, BUTTON_TYPE};
 
 #ifdef _MSC_VER
 #ifdef _WIN32
@@ -84,7 +84,8 @@ typedef DIR kiss_dir;
 #endif
 
 /* Length is number of elements, size is allocated size */
-typedef struct kiss_array {
+typedef struct kiss_array
+{
 	void **data;
 	int *id;
 	int length;
@@ -92,14 +93,16 @@ typedef struct kiss_array {
 	int ref;
 } kiss_array;
 
-typedef struct kiss_image {
+typedef struct kiss_image
+{
 	SDL_Texture *image;
 	int magic;
 	int w;
 	int h;
 } kiss_image;
 
-typedef struct kiss_font {
+typedef struct kiss_font
+{
 	TTF_Font *font;
 	int magic;
 	int fontheight;
@@ -109,14 +112,31 @@ typedef struct kiss_font {
 	int ascent;
 } kiss_font;
 
-typedef struct kiss_window
+typedef struct kiss_genData //every struct widget must have this element as a leading one.
 {
+	SDL_Rect rect; //derived
+	float hInW; //how many times w is large than h
+	//from 0 to 100
+	int relX;
+	int relY;
+	int relS;
+
+	struct kiss_window *wdw;
+	
 	int visible;
 	int focus;
-	SDL_Rect rect;
+
+	int type;
+	void* pToMaster;
+
+} kiss_genData;
+typedef struct kiss_window
+{
+	kiss_genData base;
+
 	int decorate;
 	SDL_Color bg;
-	struct kiss_window *wdw;
+
 } kiss_window;
 
 typedef struct kiss_label 
@@ -131,22 +151,14 @@ typedef struct kiss_label
 
 typedef struct kiss_button
 {
-	int visible;
-	int focus;
-	SDL_Rect rect; //derived
+	kiss_genData base;
+	
 	int active;
 	int prelight;
+
 	kiss_image normalimg;
 	kiss_image activeimg;
 	kiss_image prelightimg;
-	
-	kiss_window *wdw;
-
-	float hInW; //how many times w is large than h
-	//from 0 to 100
-	int relX;
-	int relY;
-	int relS;
 
 } kiss_button;
 
@@ -161,7 +173,8 @@ typedef struct kiss_selectbutton
 	kiss_window *wdw;
 } kiss_selectbutton;
 
-typedef struct kiss_vscrollbar {
+typedef struct kiss_vscrollbar
+{
 	int visible;
 	int focus;
 	SDL_Rect uprect;
@@ -180,7 +193,8 @@ typedef struct kiss_vscrollbar {
 	kiss_window *wdw;
 } kiss_vscrollbar;
 
-typedef struct kiss_hscrollbar {
+typedef struct kiss_hscrollbar
+{
 	int visible;
 	int focus;
 	SDL_Rect leftrect;
@@ -199,7 +213,8 @@ typedef struct kiss_hscrollbar {
 	kiss_window *wdw;
 } kiss_hscrollbar;
 
-typedef struct kiss_progressbar {
+typedef struct kiss_progressbar
+{
 	int visible;
 	SDL_Rect rect;
 	SDL_Rect barrect;
@@ -213,7 +228,8 @@ typedef struct kiss_progressbar {
 	kiss_window *wdw;
 } kiss_progressbar;
 
-typedef struct kiss_entry {
+typedef struct kiss_entry
+{
 	int visible;
 	int focus;
 	SDL_Rect rect;
@@ -232,7 +248,8 @@ typedef struct kiss_entry {
 	kiss_window *wdw;
 } kiss_entry;
 
-typedef struct kiss_textbox {
+typedef struct kiss_textbox
+{
 	int visible;
 	int focus;
 	SDL_Rect rect;
@@ -253,7 +270,8 @@ typedef struct kiss_textbox {
 	kiss_window *wdw;
 } kiss_textbox;
 
-typedef struct kiss_combobox {
+typedef struct kiss_combobox
+{
 	int visible;
 	char text[KISS_MAX_LENGTH];
 	kiss_entry entry;
@@ -264,13 +282,12 @@ typedef struct kiss_combobox {
 	kiss_window *wdw;
 } kiss_combobox;
 
-extern SDL_Color kiss_white, kiss_black, kiss_green, kiss_blue,
-		kiss_lightblue;
+extern SDL_Color kiss_white, kiss_black, kiss_green, kiss_blue, kiss_lightblue;
 extern kiss_font kiss_textfont, kiss_buttonfont;
 extern kiss_image kiss_normal, kiss_prelight, kiss_active, kiss_bar,
-	kiss_up, kiss_down, kiss_left, kiss_right, kiss_vslider,
-	kiss_hslider, kiss_selected, kiss_unselected, kiss_combo,
-	kiss_pauseButtonNormal, kiss_pauseButtonPreLight, kiss_pauseButtonActive;
+	   kiss_up, kiss_down, kiss_left, kiss_right, kiss_vslider,
+	   kiss_hslider, kiss_selected, kiss_unselected, kiss_combo,
+	   kiss_pauseButtonNormal, kiss_pauseButtonPreLight, kiss_pauseButtonActive;
 extern double kiss_spacing;
 extern int kiss_textfont_size, kiss_buttonfont_size;
 extern int kiss_click_interval, kiss_progress_interval;
@@ -323,16 +340,18 @@ int kiss_font_new(kiss_font *font, char *fname, kiss_array *a, int size);
 SDL_Renderer* kiss_init(char* title, kiss_array *a, int w, int h);
 int kiss_clean(kiss_array *a);
 int kiss_window_new(kiss_window *window, kiss_window *wdw, int decorate,
-	int x, int y, int w, int h);
+					int relX, int relY, int relS, float hInW,
+					int x, int y, int w, int h);
 int kiss_window_event(kiss_window *window, SDL_Event *event, int *draw);
 int kiss_window_draw(kiss_window *window, SDL_Renderer *renderer);
 int kiss_label_new(kiss_label *label, kiss_window *wdw, char *text,
 	int x, int y);
 int kiss_label_draw(kiss_label *label, SDL_Renderer *renderer);
-void kiss_button_relocate(kiss_button* button);
-void kiss_button_resize(kiss_button* button);
+void kiss_genRelocate(kiss_genData* button);
+void kiss_genResize(kiss_genData* button);
 int kiss_button_new(kiss_button *button, kiss_window *wdw,
-	int x, int y, int relX, int relY, int relS, float hInW);
+	                int relX, int relY, int relS, float hInW,
+					kiss_image normalimg, kiss_image activeimg, kiss_image prelightimg);
 int kiss_button_event(kiss_button *button, SDL_Event *event, int *draw);
 int kiss_button_draw(kiss_button *button, SDL_Renderer *renderer);
 int kiss_selectbutton_new(kiss_selectbutton *selectbutton, kiss_window *wdw,
