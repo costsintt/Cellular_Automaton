@@ -37,12 +37,20 @@ void App_init(struct App* self)
     kiss_window_new(&(self->main_window), NULL, 0,
                     0, 0, 0, 0,
                     0, 0, self->screenWidth, self->screenHeight);
-    kiss_window_new(&(self->buttonsWindow), &self->main_window, 0, 50, 97, 5, 10.0, 0, 0, 0, 0);
+    kiss_window_new(&(self->buttonsWindow), &self->main_window, 0, 50, 98, 100, 6, 0, 0, 0, 0);
     self->buttonsWindow.bg = kiss_blue;
 
-    kiss_button_new(&self->main_pauseButton, &self->buttonsWindow,
-                    50, 50, 100, 1.0,
+    kiss_button_new(&self->pauseButton, &self->buttonsWindow,
+                    50, 50, 5, 80, 1.0,
                     kiss_pauseButtonNormal, kiss_pauseButtonActive, kiss_pauseButtonPreLight);
+    
+    kiss_button_new(&self->loadButton, &self->buttonsWindow,
+                    40, 50, 5, 80, 1.0,
+                    kiss_loadButtonNormal, kiss_loadButtonActive, kiss_loadButtonPreLight);
+
+    kiss_button_new(&self->saveButton, &self->buttonsWindow,
+                    60, 50, 5, 80, 1.0,
+                    kiss_saveButtonNormal, kiss_saveButtonActive, kiss_saveButtonPreLight);
 
     self->ticksPassedToTheLatestUpdate = SDL_GetTicks64();
 
@@ -57,8 +65,10 @@ bool App_updateWindow(struct App* self)
     SDL_Event event;
     while (SDL_PollEvent(&event))
     {
-        kiss_window_event(&(self->main_window), &event, &(self->draw));
-        button_event(&(self->main_pauseButton), &event, &(self->draw), &(self->pauseBoardIter));
+        kiss_window_event(&self->main_window, &event, &self->draw);
+        button_event(&self->pauseButton, &event, &self->draw, &self->pauseBoardIter);
+        button_event(&self->loadButton, &event, &self->draw, &self->pauseBoardIter);
+        button_event(&self->saveButton, &event, &self->draw, &self->pauseBoardIter);
         if(event.type == SDL_QUIT)
         {
             return false;
@@ -74,8 +84,14 @@ bool App_updateWindow(struct App* self)
             kiss_genResize((kiss_genData*)&self->buttonsWindow);
             kiss_genRelocate((kiss_genData*)&self->buttonsWindow);
 
-            kiss_genResize((kiss_genData*)&self->main_pauseButton);
-            kiss_genRelocate((kiss_genData*)&self->main_pauseButton);
+            kiss_genResize((kiss_genData*)&self->pauseButton);
+            kiss_genRelocate((kiss_genData*)&self->pauseButton);
+
+            kiss_genResize((kiss_genData*)&self->loadButton);
+            kiss_genRelocate((kiss_genData*)&self->loadButton);
+
+            kiss_genResize((kiss_genData*)&self->saveButton);
+            kiss_genRelocate((kiss_genData*)&self->saveButton);
 
             
         }

@@ -40,7 +40,9 @@ struct App
     kiss_array objects;
     kiss_window main_window;
     kiss_window buttonsWindow;
-    kiss_button main_pauseButton;
+    kiss_button pauseButton;
+    kiss_button loadButton;
+    kiss_button saveButton;
 
     int draw; //make it bool
     bool pauseBoardIter;

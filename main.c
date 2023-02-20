@@ -32,9 +32,12 @@ int main()
 
         App_clearWindow(app);
         kiss_window_draw(&app->main_window, app->renderer);
-        kiss_window_draw(&app->buttonsWindow, app->renderer);
-        kiss_button_draw(&app->main_pauseButton, app->renderer);
         App_drawBoard(app, board);
+        kiss_window_draw(&app->buttonsWindow, app->renderer);
+        kiss_button_draw(&app->pauseButton, app->renderer);
+        kiss_button_draw(&app->loadButton, app->renderer);
+        kiss_button_draw(&app->saveButton, app->renderer);
+        
         App_swapWindowBuffers(app);
 
         if(!app->pauseBoardIter) Board_nextIteration(board);
