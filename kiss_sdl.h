@@ -115,11 +115,11 @@ typedef struct kiss_font
 typedef struct kiss_genData //every struct widget must have this element as a leading one.
 {
 	SDL_Rect rect; //derived
-	float hInW; //how many times w is large than h
-	//from 0 to 100
 	int relX;
 	int relY;
-	int relS;
+	int relSX;
+	int relSY;
+	float hInW;
 
 	struct kiss_window *wdw;
 	
@@ -287,7 +287,9 @@ extern kiss_font kiss_textfont, kiss_buttonfont;
 extern kiss_image kiss_normal, kiss_prelight, kiss_active, kiss_bar,
 	   kiss_up, kiss_down, kiss_left, kiss_right, kiss_vslider,
 	   kiss_hslider, kiss_selected, kiss_unselected, kiss_combo,
-	   kiss_pauseButtonNormal, kiss_pauseButtonPreLight, kiss_pauseButtonActive;
+	   kiss_pauseButtonNormal, kiss_pauseButtonPreLight, kiss_pauseButtonActive,
+	   kiss_saveButtonNormal, kiss_saveButtonPreLight, kiss_saveButtonActive,
+	   kiss_loadButtonNormal, kiss_loadButtonPreLight, kiss_loadButtonActive;
 extern double kiss_spacing;
 extern int kiss_textfont_size, kiss_buttonfont_size;
 extern int kiss_click_interval, kiss_progress_interval;
@@ -340,7 +342,7 @@ int kiss_font_new(kiss_font *font, char *fname, kiss_array *a, int size);
 SDL_Renderer* kiss_init(char* title, kiss_array *a, int w, int h);
 int kiss_clean(kiss_array *a);
 int kiss_window_new(kiss_window *window, kiss_window *wdw, int decorate,
-					int relX, int relY, int relS, float hInW,
+					int relX, int relY, int relSX, int relSY,
 					int x, int y, int w, int h);
 int kiss_window_event(kiss_window *window, SDL_Event *event, int *draw);
 int kiss_window_draw(kiss_window *window, SDL_Renderer *renderer);
@@ -350,7 +352,7 @@ int kiss_label_draw(kiss_label *label, SDL_Renderer *renderer);
 void kiss_genRelocate(kiss_genData* button);
 void kiss_genResize(kiss_genData* button);
 int kiss_button_new(kiss_button *button, kiss_window *wdw,
-	                int relX, int relY, int relS, float hInW,
+	                int relX, int relY, int relSX, int relSY, float hInW,
 					kiss_image normalimg, kiss_image activeimg, kiss_image prelightimg);
 int kiss_button_event(kiss_button *button, SDL_Event *event, int *draw);
 int kiss_button_draw(kiss_button *button, SDL_Renderer *renderer);

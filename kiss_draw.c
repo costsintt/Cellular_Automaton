@@ -30,7 +30,9 @@ kiss_image kiss_normal, kiss_prelight, kiss_active, kiss_bar,
 	kiss_up, kiss_down, kiss_left, kiss_right, kiss_vslider,
 	kiss_hslider, kiss_selected, kiss_unselected, kiss_combo,
 	
-	kiss_pauseButtonNormal, kiss_pauseButtonPreLight, kiss_pauseButtonActive;
+	kiss_pauseButtonNormal, kiss_pauseButtonPreLight, kiss_pauseButtonActive,
+	   kiss_saveButtonNormal, kiss_saveButtonPreLight, kiss_saveButtonActive,
+	   kiss_loadButtonNormal, kiss_loadButtonPreLight, kiss_loadButtonActive;
 
 int kiss_screen_width, kiss_screen_height;
 int kiss_textfont_size = 15;
@@ -231,12 +233,25 @@ SDL_Renderer* kiss_init(char* title, kiss_array *a, int w, int h)
 	                    a, renderer);
 	r += kiss_image_new(&kiss_unselected, "../images/kiss_unselected.png",
 	                    a, renderer);
-	r += kiss_image_new(&kiss_pauseButtonActive, "../images/pauseButtonSelected.png",
+	r += kiss_image_new(&kiss_pauseButtonActive, "../images/pause_active.png",
 	                    a, renderer);
-	r += kiss_image_new(&kiss_pauseButtonNormal, "../images/pauseButtonNormal.png",
+	r += kiss_image_new(&kiss_pauseButtonNormal, "../images/pause_normal.png",
 	                    a, renderer);
-	r += kiss_image_new(&kiss_pauseButtonPreLight, "../images/pauseButtonSelected.png",
+	r += kiss_image_new(&kiss_pauseButtonPreLight, "../images/pause_prelight.png",
+	                    a, renderer),
+	r += kiss_image_new(&kiss_loadButtonActive, "../images/load_active.png",
 	                    a, renderer);
+	r += kiss_image_new(&kiss_loadButtonNormal, "../images/load_normal.png",
+	                    a, renderer);
+	r += kiss_image_new(&kiss_loadButtonPreLight, "../images/load_prelight.png",
+	                    a, renderer),
+	r += kiss_image_new(&kiss_saveButtonActive, "../images/save_active.png",
+	                    a, renderer);
+	r += kiss_image_new(&kiss_saveButtonNormal, "../images/save_normal.png",
+	                    a, renderer);
+	r += kiss_image_new(&kiss_saveButtonPreLight, "../images/save_prelight.png",
+	                    a, renderer);
+	
 	if (r)
 	{
 		kiss_clean(a);

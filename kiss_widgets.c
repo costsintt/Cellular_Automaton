@@ -26,7 +26,7 @@
 #include "kiss_sdl.h"
 
 int kiss_window_new(kiss_window *window, kiss_window *wdw, int decorate,
-					int relX, int relY, int relS, float hInW,
+					int relX, int relY, int relSX, int relSY,
 					int x, int y, int w, int h)
 {
 	if (!window) return -1;
@@ -34,13 +34,14 @@ int kiss_window_new(kiss_window *window, kiss_window *wdw, int decorate,
 
 	window->base.relX = relX;
 	window->base.relY = relY;
-	window->base.relS = relS;
-	window->base.hInW = hInW;
+	window->base.relSX = relSX;
+	window->base.relSY = relSY;
+	window->base.hInW = 0.0;
 
 	window->base.type = WINDOW_TYPE;
 	window->base.pToMaster = window;
 
-	if(wdw && relX != 0 && relY != 0 && relS != 0 && hInW != 0)
+	if(wdw && relX != 0 && relY != 0 && relSX != 0 && relSY != 0)
 	{
 		kiss_genResize((kiss_genData*)&window->base);
 		kiss_genRelocate((kiss_genData*)&window->base);
@@ -147,8 +148,18 @@ void kiss_genResize(kiss_genData* widget)
 {
 	if(widget->wdw)
 	{
-		widget->rect.h = widget->wdw->base.rect.h * widget->relS / 100;
-		widget->rect.w = widget->hInW * widget->rect.h;
+		widget->rect.h = widget->wdw->base.rect.h * widget->relSY / 100;
+		widget->rect.w = widget->wdw->base.rect.w * widget->relSX / 100;
+		
+		if(widget->hInW != 0.0)
+		{
+			if(widget->rect.h <= widget->rect.w)
+				widget->rect.w = widget->hInW * widget->rect.h;
+			else
+				widget->rect.h = widget->hInW / widget->rect.h;
+
+		}
+
 		
 		if(widget->type == BUTTON_TYPE)
 		{
@@ -167,7 +178,7 @@ void kiss_genResize(kiss_genData* widget)
 }
 
 int kiss_button_new(kiss_button *button, kiss_window *wdw,
-	                int relX, int relY, int relS, float hInW,
+	                int relX, int relY, int relSX, int relSY, float hInW,
 					kiss_image normalimg, kiss_image activeimg, kiss_image prelightimg)
 {
 	if (!button) return -1;
@@ -175,7 +186,8 @@ int kiss_button_new(kiss_button *button, kiss_window *wdw,
 
 	button->base.relX = relX;
 	button->base.relY = relY;
-	button->base.relS = relS;
+	button->base.relSX = relSX;
+	button->base.relSY = relSY;
 	button->base.hInW = hInW;
 	
 	button->base.type = BUTTON_TYPE;
