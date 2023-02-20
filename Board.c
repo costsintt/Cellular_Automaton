@@ -32,6 +32,13 @@ void Board_decons(struct Board **board)
 struct Board *Board_copy(struct Board *b)
 {
     struct Board *newBoard = Board_cons(b->shape[0], b->shape[1], b->iter, b->areBordersMovable);
+    for (size_t i = 0; i < newBoard->shape[0]; i++)
+    {
+        for (size_t j = 0; j < newBoard->shape[1]; j++)
+        {
+            newBoard->grid[i][j] = b->grid[i][j];
+        }
+    }
 
     return newBoard;
 }

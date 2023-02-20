@@ -13,6 +13,7 @@
 int main()
 {
     struct Board* board = Board_cons(BOARD_DEFAULT_HEIGHT, BOARD_DEFAULT_WIDTH, 0, 1);
+    struct Board* buffBoard; 
     Board_fillRandom(board, 0, 2);
 
     struct App* app = App_cons(500, 700, 100);
@@ -40,7 +41,18 @@ int main()
         
         App_swapWindowBuffers(app);
 
-        if(!app->pauseBoardIter) Board_nextIteration(board);
+        if(app->copyBoard)
+        {
+            buffBoard = Board_copy(board);
+            app->copyBoard = false;
+        }
+        else if(app->loadBoard)
+        {
+            Board_decons(&board);
+            board = Board_copy(buffBoard);
+            app->loadBoard = false;
+        }
+        else if(!app->pauseBoardIter) Board_nextIteration(board);
         
         App_waitIfNeeded(app);
     }

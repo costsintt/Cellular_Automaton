@@ -5,6 +5,16 @@ static void button_event(kiss_button *button, SDL_Event *e, int *draw, bool *pau
     if (kiss_button_event(button, e, draw)) *pauseBoardIter ^= 1;
 }
 
+static void button_load(kiss_button *button, SDL_Event *e, struct App* app)
+{
+    if (kiss_button_event(button, e, &app->draw)) app->loadBoard = true;
+}
+
+static void button_save(kiss_button *button, SDL_Event *e, struct App* app)
+{
+    if (kiss_button_event(button, e, &app->draw)) app->copyBoard = true;
+}
+
 struct App* App_cons(size_t screenHeight, size_t screenWidth, unsigned tickDuration)
 {
     struct App* app = calloc(1, sizeof(struct App));
@@ -67,8 +77,8 @@ bool App_updateWindow(struct App* self)
     {
         kiss_window_event(&self->main_window, &event, &self->draw);
         button_event(&self->pauseButton, &event, &self->draw, &self->pauseBoardIter);
-        button_event(&self->loadButton, &event, &self->draw, &self->pauseBoardIter);
-        button_event(&self->saveButton, &event, &self->draw, &self->pauseBoardIter);
+        button_load(&self->loadButton, &event, self);
+        button_save(&self->saveButton, &event, self);
         if(event.type == SDL_QUIT)
         {
             return false;

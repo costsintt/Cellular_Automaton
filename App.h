@@ -46,6 +46,8 @@ struct App
 
     int draw; //make it bool
     bool pauseBoardIter;
+    bool copyBoard;
+    bool loadBoard;
 };
 
 
