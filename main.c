@@ -14,7 +14,7 @@ int main()
 {
     struct Board* board = Board_cons(BOARD_DEFAULT_HEIGHT, BOARD_DEFAULT_WIDTH, 0, 1);
     struct Board* buffBoard; 
-    Board_fillRandom(board, 0, 2);
+    Board_fillRandom(board, BOARD_MINIMUMCELLVALUE, BOARD_MAXIMUMCELLVALUE);
 
     struct App* app = App_cons(500, 700, 100);
     app->cam->viewHeightInCells = 100;
@@ -25,16 +25,20 @@ int main()
     App_init(app);
     app->main_window.base.visible = 1;
     app->buttonsWindow.base.visible = 1;
+    app->graphWindow.base.visible = 1;
     app->main_window.bg = kiss_green;
     
     while(App_updateWindow(app))
     {   
+        printf("%lu +\t%lu : %lu\n", Board_count(board, 0), Board_count(board, 1), board->iter);
+
         App_takeKeyboardInput(app, board);
 
         App_clearWindow(app);
         kiss_window_draw(&app->main_window, app->renderer);
         App_drawBoard(app, board);
         kiss_window_draw(&app->buttonsWindow, app->renderer);
+        graphWindow_draw(&app->graphWindow, app);
         kiss_button_draw(&app->pauseButton, app->renderer);
         kiss_button_draw(&app->loadButton, app->renderer);
         kiss_button_draw(&app->saveButton, app->renderer);

@@ -18,7 +18,6 @@
 #define APP_CAMERA_DEFAULT_VIEWWIDTHINCELLS 5
 #define APP_WINDOW_NAME "lololo"
 
-
 struct App
 {
     int screenHeight;
@@ -40,6 +39,7 @@ struct App
     kiss_array objects;
     kiss_window main_window;
     kiss_window buttonsWindow;
+    kiss_window graphWindow;
     kiss_button pauseButton;
     kiss_button loadButton;
     kiss_button saveButton;
@@ -50,6 +50,7 @@ struct App
     bool loadBoard;
 };
 
+void graphWindow_draw(kiss_window* window, struct App* app);
 
 struct App* App_cons(size_t screenHeight, size_t screenWidth, unsigned tickDuration);
 

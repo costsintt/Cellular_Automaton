@@ -12,7 +12,7 @@ struct Board *Board_cons(size_t height, size_t width, size_t iter, bool areBorde
     board->iter = iter;
     board->areBordersMovable = areBordersMovable;
 
-    board->countNeighbors = &Board_count;
+    board->countNeighbors = &Board_countNeighbrs;
     board->_gameRule = &Board_gameRule1;
 
     return board;
@@ -170,7 +170,7 @@ void Board_shrink(struct Board *b)
 }
 
 
-void Board_count(struct Board *self, size_t i, size_t j)
+void Board_countNeighbrs(struct Board *self, size_t i, size_t j)
 {
     for(unsigned n = 0; n < BOARD_MAXIMUMCELLVALUE - BOARD_MINIMUMCELLVALUE + 1; n++)
         self->counter[n] = 0;
@@ -217,6 +217,7 @@ void Board_nextIteration(struct Board* self)
 
     deleteGrid(&(self->grid), self->shape[0], self->shape[1]);
     self->grid = newGrid;
+    self->iter++;
 }
 
 
@@ -230,5 +231,18 @@ void Board_fillRandom(struct Board* board, int fromWhat, int toWhat)
 {
     srand(board->shape[0] + board->shape[1]);
     for(size_t i = 0; i < board->shape[0]; i++) for(size_t j = 0; j < board->shape[1]; j++)
-    board->grid[i][j] = rand() % (toWhat + 1) - fromWhat;
+            board->grid[i][j] = rand() % (toWhat + 1) - fromWhat;
+}
+
+size_t Board_count(struct Board* board, int cellType)
+{
+    size_t counter = 0;
+    for (size_t i = 0; i < board->shape[0]; i++)
+    {
+        for (size_t j = 0; j < board->shape[1]; j++)
+        {
+            if(board->grid[i][j] == cellType) counter++;
+        }
+    }
+    return counter;
 }

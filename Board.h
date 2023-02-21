@@ -7,9 +7,9 @@
 
 #include "gridManipul.h"
 
-#define BOARD_COUNTER_DIMENSIONS 8
-#define BOARD_MINIMUMCELLVALUE -3
-#define BOARD_MAXIMUMCELLVALUE 4
+#define BOARD_COUNTER_DIMENSIONS 2
+#define BOARD_MINIMUMCELLVALUE 0
+#define BOARD_MAXIMUMCELLVALUE 1
 
 struct Board
 {
@@ -45,7 +45,7 @@ void Board_expand(struct Board* board, size_t n);
 void Board_shrink(struct Board* b);
 
 
-void Board_count(struct Board* self, size_t i, size_t j);
+void Board_countNeighbrs(struct Board* self, size_t i, size_t j);
 
 
 int Board_gameRule1(struct Board* self, size_t i, size_t j);
@@ -58,5 +58,7 @@ void Board_nextIteration(struct Board* self);
 void Board_fill(struct Board* board, int whatToFill);
 
 void Board_fillRandom(struct Board* board, int fromWhat, int toWhat);
+
+size_t Board_count(struct Board* board, int cellType);
 
 #endif

@@ -15,6 +15,17 @@ static void button_save(kiss_button *button, SDL_Event *e, struct App* app)
     if (kiss_button_event(button, e, &app->draw)) app->copyBoard = true;
 }
 
+void graphWindow_draw(kiss_window* window, struct App* app)
+{
+    kiss_window_draw(window, app->renderer);
+    SDL_Rect rect;
+    rect.x = window->base.rect.x * 1.2;
+    rect.y = window->base.rect.y * 1.2;
+    rect.w = 100;
+    rect.h = 100;
+    kiss_fillrect(app->renderer, &rect, kiss_black);
+}
+
 struct App* App_cons(size_t screenHeight, size_t screenWidth, unsigned tickDuration)
 {
     struct App* app = calloc(1, sizeof(struct App));
@@ -45,10 +56,11 @@ void App_init(struct App* self)
                                self->screenWidth, self->screenHeight);
 
     kiss_window_new(&(self->main_window), NULL, 0,
-                    0, 0, 0, 0,
-                    0, 0, self->screenWidth, self->screenHeight);
+                    0, 0, 0, 0, 0, 0, self->screenWidth, self->screenHeight);
     kiss_window_new(&(self->buttonsWindow), &self->main_window, 0, 50, 98, 100, 6, 0, 0, 0, 0);
     self->buttonsWindow.bg = kiss_blue;
+    kiss_window_new(&(self->graphWindow), &self->main_window, 0, 85, 15, 30, 30, 0, 0, 0, 0);
+    self->graphWindow.bg = kiss_lightblue;
 
     kiss_button_new(&self->pauseButton, &self->buttonsWindow,
                     50, 50, 5, 80, 1.0,
@@ -76,6 +88,8 @@ bool App_updateWindow(struct App* self)
     while (SDL_PollEvent(&event))
     {
         kiss_window_event(&self->main_window, &event, &self->draw);
+        kiss_window_event(&self->buttonsWindow, &event, &self->draw);
+        kiss_window_event(&self->graphWindow, &event, &self->draw);
         button_event(&self->pauseButton, &event, &self->draw, &self->pauseBoardIter);
         button_load(&self->loadButton, &event, self);
         button_save(&self->saveButton, &event, self);
@@ -93,6 +107,9 @@ bool App_updateWindow(struct App* self)
 
             kiss_genResize((kiss_genData*)&self->buttonsWindow);
             kiss_genRelocate((kiss_genData*)&self->buttonsWindow);
+
+            kiss_genResize((kiss_genData*)&self->graphWindow);
+            kiss_genRelocate((kiss_genData*)&self->graphWindow);
 
             kiss_genResize((kiss_genData*)&self->pauseButton);
             kiss_genRelocate((kiss_genData*)&self->pauseButton);

@@ -77,13 +77,24 @@ int kiss_window_event(kiss_window *window, SDL_Event *event, int *draw)
 
 int kiss_window_draw(kiss_window *window, SDL_Renderer *renderer)
 {
-	if(window && window->base.wdw)
-		window->base.visible = window->base.wdw->base.visible;
-	if(!window || !window->base.visible || !renderer)
-		return 0;
+	if(window && window->base.wdw) window->base.visible = window->base.wdw->base.visible;
+	if(!window || !window->base.visible || !renderer) return 0;
 	kiss_fillrect(renderer, &window->base.rect, window->bg);
 	if(window->decorate)
 		kiss_decorate(renderer, &window->base.rect, kiss_blue, kiss_edge);
+	return 1;
+}
+
+int kiss_button_draw(kiss_button *button, SDL_Renderer *renderer)
+{
+	if (button && button->base.wdw) button->base.visible = button->base.wdw->base.visible;
+	if (!button || !button->base.visible || !renderer) return 0;
+	if (button->active)
+		kiss_renderimage(renderer, button->activeimg, button->base.rect.x, button->base.rect.y, NULL);
+	else if (button->prelight && !button->active)
+		kiss_renderimage(renderer, button->prelightimg, button->base.rect.x, button->base.rect.y, NULL);
+	else
+		kiss_renderimage(renderer, button->normalimg, button->base.rect.x, button->base.rect.y, NULL);
 	return 1;
 }
 
@@ -249,18 +260,7 @@ int kiss_button_event(kiss_button *button, SDL_Event *event, int *draw)
 	return 0;
 }
 
-int kiss_button_draw(kiss_button *button, SDL_Renderer *renderer)
-{
-	if (button && button->base.wdw) button->base.visible = button->base.wdw->base.visible;
-	if (!button || !button->base.visible || !renderer) return 0;
-	if (button->active)
-		kiss_renderimage(renderer, button->activeimg, button->base.rect.x, button->base.rect.y, NULL);
-	else if (button->prelight && !button->active)
-		kiss_renderimage(renderer, button->prelightimg, button->base.rect.x, button->base.rect.y, NULL);
-	else
-		kiss_renderimage(renderer, button->normalimg, button->base.rect.x, button->base.rect.y, NULL);
-	return 1;
-}
+
 
 
 
