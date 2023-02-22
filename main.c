@@ -23,10 +23,6 @@ int main()
 
 
     App_init(app);
-    app->main_window.base.visible = 1;
-    app->buttonsWindow.base.visible = 1;
-    app->graphWindow.base.visible = 1;
-    app->main_window.bg = kiss_green;
     
     while(App_updateWindow(app))
     {   

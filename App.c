@@ -23,7 +23,7 @@ void graphWindow_draw(kiss_window* window, struct App* app)
     rect.y = window->base.rect.y * 1.2;
     rect.w = 100;
     rect.h = 100;
-    kiss_fillrect(app->renderer, &rect, kiss_black);
+    kiss_fillrect(app->renderer, &rect, kiss_makeColor(255, 255, 255, 255));
 }
 
 struct App* App_cons(size_t screenHeight, size_t screenWidth, unsigned tickDuration)
@@ -55,12 +55,18 @@ void App_init(struct App* self)
     self->renderer = kiss_init(APP_WINDOW_NAME, &self->objects,
                                self->screenWidth, self->screenHeight);
 
-    kiss_window_new(&(self->main_window), NULL, 0,
-                    0, 0, 0, 0, 0, 0, self->screenWidth, self->screenHeight);
-    kiss_window_new(&(self->buttonsWindow), &self->main_window, 0, 50, 98, 100, 6, 0, 0, 0, 0);
-    self->buttonsWindow.bg = kiss_blue;
-    kiss_window_new(&(self->graphWindow), &self->main_window, 0, 85, 15, 30, 30, 0, 0, 0, 0);
-    self->graphWindow.bg = kiss_lightblue;
+    kiss_window_new(&(self->main_window), NULL,
+                    0, 0, 180, 0, 255,
+                    0, 0, 0, 0, 0.0, 1, 1,
+                    0, 0, self->screenWidth, self->screenHeight);
+    kiss_window_new(&(self->buttonsWindow), &self->main_window,
+                    0, 255, 0, 0, 255,
+                    50, 98, 100, 6, 0.0, 1, 1,
+                    0, 0, 0, 0);
+    kiss_window_new(&(self->graphWindow), &self->main_window,
+                    0, 0, 0, 255, 255,
+                    85, 15, 30, 30, 0.0, 1, 1,
+                    0, 0, 0, 0);
 
     kiss_button_new(&self->pauseButton, &self->buttonsWindow,
                     50, 50, 5, 80, 1.0,

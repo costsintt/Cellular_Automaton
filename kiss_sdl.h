@@ -141,20 +141,18 @@ typedef struct kiss_window
 
 typedef struct kiss_label 
 {
-	int visible;
-	SDL_Rect rect;
+	kiss_genData base;
 	char text[KISS_MAX_LABEL];
 	SDL_Color textcolor;
 	kiss_font font;
-	kiss_window *wdw;
 } kiss_label;
 
 typedef struct kiss_button
 {
 	kiss_genData base;
 	
-	int active;
-	int prelight;
+	int active; //derived
+	int prelight; //derived
 
 	kiss_image normalimg;
 	kiss_image activeimg;
@@ -282,7 +280,7 @@ typedef struct kiss_combobox
 	kiss_window *wdw;
 } kiss_combobox;
 
-extern SDL_Color kiss_white, kiss_black, kiss_green, kiss_blue, kiss_lightblue;
+extern SDL_Color kiss_makeColor(int r, int g, int b, int a);
 extern kiss_font kiss_textfont, kiss_buttonfont;
 extern kiss_image kiss_normal, kiss_prelight, kiss_active, kiss_bar,
 	   kiss_up, kiss_down, kiss_left, kiss_right, kiss_vslider,
@@ -341,13 +339,16 @@ int kiss_image_new(kiss_image *image, char *fname, kiss_array *a,
 int kiss_font_new(kiss_font *font, char *fname, kiss_array *a, int size);
 SDL_Renderer* kiss_init(char* title, kiss_array *a, int w, int h);
 int kiss_clean(kiss_array *a);
-int kiss_window_new(kiss_window *window, kiss_window *wdw, int decorate,
-					int relX, int relY, int relSX, int relSY,
+int kiss_window_new(kiss_window *window, kiss_window *wdw,
+					int decorate, int color_r, int color_g, int color_b, int color_a, 
+					int relX, int relY, int relSX, int relSY, float hInW,
+					int visible, int focus,
 					int x, int y, int w, int h);
 int kiss_window_event(kiss_window *window, SDL_Event *event, int *draw);
 int kiss_window_draw(kiss_window *window, SDL_Renderer *renderer);
-int kiss_label_new(kiss_label *label, kiss_window *wdw, char *text,
-	int x, int y);
+int kiss_label_new(kiss_label *label, kiss_window *wdw,
+				   int relX, int relY, int relSX, int relSY,
+				   char *text, int textColor, int font);
 int kiss_label_draw(kiss_label *label, SDL_Renderer *renderer);
 void kiss_genRelocate(kiss_genData* button);
 void kiss_genResize(kiss_genData* button);

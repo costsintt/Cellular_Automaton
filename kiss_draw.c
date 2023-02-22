@@ -43,11 +43,13 @@ int kiss_slider_padding = 2;
 int kiss_edge = 2;
 int kiss_border = 6;
 double kiss_spacing = 0.5;
-SDL_Color kiss_white = {255, 255, 255, 255};
-SDL_Color kiss_black = {0, 0, 0, 255};
-SDL_Color kiss_green = {0, 150, 0, 255};
-SDL_Color kiss_blue = {0, 0, 255, 255};
-SDL_Color kiss_lightblue = {200, 225, 255, 255};
+
+extern SDL_Color kiss_makeColor(int r, int g, int b, int a)
+{
+	SDL_Color col;
+	col.r = r; col.g = g; col.b = b; col.a = a;
+	return col;
+}
 
 unsigned int kiss_getticks(void)
 {
