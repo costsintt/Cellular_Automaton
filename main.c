@@ -16,7 +16,7 @@ int main()
     struct Board* buffBoard; 
     Board_fillRandom(board, BOARD_MINIMUMCELLVALUE, BOARD_MAXIMUMCELLVALUE);
 
-    struct App* app = App_cons(500, 700, 100);
+    struct App* app = App_cons(800, 1200, 100);
     app->cam->viewHeightInCells = 100;
     app->cam->viewWidthInCells = 100;
 

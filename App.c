@@ -61,7 +61,7 @@ void App_init(struct App* self)
                     0, 0, self->screenWidth, self->screenHeight);
     kiss_window_new(&(self->buttonsWindow), &self->main_window,
                     0, 255, 0, 0, 255,
-                    50, 98, 100, 6, 0.0, 1, 1,
+                    50, 97, 100, 6, 0.0, 1, 1,
                     0, 0, 0, 0);
     kiss_window_new(&(self->graphWindow), &self->main_window,
                     0, 0, 0, 255, 255,

@@ -200,9 +200,10 @@ void kiss_genResize(kiss_genData* widget)
 			if(widget->rect.h <= widget->rect.w)
 				widget->rect.w = widget->hInW * widget->rect.h;
 			else
-				widget->rect.h = widget->hInW / widget->rect.h;
+				widget->rect.h =  widget->rect.w / widget->hInW;
 
 		}
+		printf("%d\n", widget->rect.h);
 
 		
 		if(widget->type == BUTTON_TYPE)
