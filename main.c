@@ -12,9 +12,9 @@
 
 int main()
 {
-    struct Board* board = Board_cons(BOARD_DEFAULT_HEIGHT, BOARD_DEFAULT_WIDTH, 0, 1);
+    struct Board* board = Board_cons(BOARD_DEFAULT_HEIGHT, BOARD_DEFAULT_WIDTH, 0, 1, 0, 1);
     struct Board* buffBoard; 
-    Board_fillRandom(board, BOARD_MINIMUMCELLVALUE, BOARD_MAXIMUMCELLVALUE);
+    Board_fillRandom(board, board->cellMinValue, board->cellMaxValue);
 
     struct App* app = App_cons(800, 1200, 100);
     app->cam->viewHeightInCells = 100;

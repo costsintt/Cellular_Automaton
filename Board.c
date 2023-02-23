@@ -1,7 +1,8 @@
 #include "Board.h"
 
 
-struct Board *Board_cons(size_t height, size_t width, size_t iter, bool areBordersMovable)
+struct Board *Board_cons(size_t height, size_t width, int cellMinValue, int cellMaxValue,
+                         size_t iter, bool areBordersMovable)
 {
     int **grid = createGrid(height, width);
 
@@ -9,9 +10,10 @@ struct Board *Board_cons(size_t height, size_t width, size_t iter, bool areBorde
     board->grid = grid;
     board->shape[0] = height;
     board->shape[1] = width;
+    board->cellMaxValue = cellMaxValue;
+    board->cellMinValue = cellMinValue;
     board->iter = iter;
     board->areBordersMovable = areBordersMovable;
-
     board->countNeighbors = &Board_countNeighbrs;
     board->_gameRule = &Board_gameRule1;
 
@@ -31,7 +33,8 @@ void Board_decons(struct Board **board)
 
 struct Board *Board_copy(struct Board *b)
 {
-    struct Board *newBoard = Board_cons(b->shape[0], b->shape[1], b->iter, b->areBordersMovable);
+    struct Board *newBoard = Board_cons(b->shape[0], b->shape[1], 0, 1,
+                                        b->iter, b->areBordersMovable);
     for (size_t i = 0; i < newBoard->shape[0]; i++)
     {
         for (size_t j = 0; j < newBoard->shape[1]; j++)
@@ -172,7 +175,7 @@ void Board_shrink(struct Board *b)
 
 void Board_countNeighbrs(struct Board *self, size_t i, size_t j)
 {
-    for(unsigned n = 0; n < BOARD_MAXIMUMCELLVALUE - BOARD_MINIMUMCELLVALUE + 1; n++)
+    for(unsigned n = 0; n < self->cellMaxValue - self->cellMinValue + 1; n++)
         self->counter[n] = 0;
 
     for (int n = i - 1; n <= i + 1; n++)

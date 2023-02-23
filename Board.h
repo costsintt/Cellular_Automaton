@@ -7,9 +7,7 @@
 
 #include "gridManipul.h"
 
-#define BOARD_COUNTER_DIMENSIONS 2
-#define BOARD_MINIMUMCELLVALUE 0
-#define BOARD_MAXIMUMCELLVALUE 1
+#define BOARD_COUNTER_DIMENSIONS 64
 
 struct Board
 {
@@ -17,6 +15,8 @@ struct Board
     size_t shape[2];
 
     int counter[BOARD_COUNTER_DIMENSIONS];
+    int cellMaxValue;
+    int cellMinValue;
 
     size_t iter;
     bool areBordersMovable;
@@ -27,7 +27,8 @@ struct Board
 };
 
 
-struct Board* Board_cons(size_t height, size_t width, size_t iter, bool areBordersMovable);
+struct Board* Board_cons(size_t height, size_t width, int cellMinValue, int cellMaxValue,
+                         size_t iter, bool areBordersMovable);
 
 
 void Board_decons(struct Board** board);
