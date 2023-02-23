@@ -10,7 +10,7 @@
 #include "kiss_sdl.h"
 #include "Camera.h"
 #include "Board.h"
-
+#include "eLists.h"
 
 #define APP_CAMERA_DEFAULT_X 0
 #define APP_CAMERA_DEFAULT_Y 0
@@ -31,6 +31,8 @@ struct App
 
     unsigned tickDuration;
     unsigned ticksPassedToTheLatestUpdate; //derived
+
+    struct sList* dataStorage;
 
     SDL_Window* sdlWindow;
     SDL_Renderer* renderer;

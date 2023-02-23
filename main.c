@@ -10,6 +10,8 @@
 #define BOARD_DEFAULT_WIDTH 150
 #define BOARD_DEFAULT_HEIGHT 150
 
+#define DATABUFFER_LENGTH 2
+
 int main()
 {
     struct Board* board = Board_cons(BOARD_DEFAULT_HEIGHT, BOARD_DEFAULT_WIDTH, 0, 1, 0, 1);
@@ -20,13 +22,15 @@ int main()
     app->cam->viewHeightInCells = 100;
     app->cam->viewWidthInCells = 100;
 
-
+    uint64_t* dataBuff;
 
     App_init(app);
     
     while(App_updateWindow(app))
     {   
-        printf("%lu +\t%lu : %lu\n", Board_count(board, 0), Board_count(board, 1), board->iter);
+        app->dataStorage->push(app->dataStorage, Board_countInRange(board, DATABUFFER_LENGTH, 0, 1));
+        dataBuff = app->dataStorage->get(app->dataStorage, app->dataStorage->len);
+        printf("%lu +\t%lu : %lu\n", dataBuff[0], dataBuff[1], board->iter);
 
         App_takeKeyboardInput(app, board);
 

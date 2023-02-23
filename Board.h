@@ -63,7 +63,7 @@ void Board_fillRandom(struct Board* board, int fromWhat, int toWhat);
 
 size_t Board_count(struct Board* board, int32_t cellType);
 
-int Board_countInRange(struct Board* board, uint64_t* buff, int32_t buffSize,
+uint64_t* Board_countInRange(struct Board* board, size_t buffSize,
                        int32_t fromCellType, int32_t toCellType);
 
 #endif

@@ -250,19 +250,15 @@ size_t Board_count(struct Board* board, int32_t cellType)
     return counter;
 }
 
-int Board_countInRange(struct Board* board, uint64_t* buff, int32_t buffSize,
+uint64_t* Board_countInRange(struct Board* board, size_t buffSize,
                        int32_t fromCellType, int32_t toCellType)
-{
-    if(fromCellType < board->cellMinValue || toCellType > board->cellMaxValue)
-        return -1;
-    if(toCellType - fromCellType > buffSize)
-        return -1;
-    
+{   
+    uint64_t* buff = calloc(buffSize, sizeof(uint64_t));
     size_t iOverBuff = 0;
     for(int32_t i = fromCellType; i <= toCellType; i++)
     {
         buff[iOverBuff++] = Board_count(board, i);
     }
-    return 1;
+    return buff;
 }
 

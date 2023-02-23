@@ -35,6 +35,7 @@ struct App* App_cons(size_t screenHeight, size_t screenWidth, unsigned tickDurat
                            APP_CAMERA_DEFAULT_VIEWWIDTHINCELLS,
                            APP_CAMERA_DEFAULT_X, APP_CAMERA_DEFAULT_Y);
     app->tickDuration = tickDuration;
+    app->dataStorage = sList_cons();
 
     return app;
 }
