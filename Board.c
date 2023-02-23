@@ -237,7 +237,7 @@ void Board_fillRandom(struct Board* board, int fromWhat, int toWhat)
             board->grid[i][j] = rand() % (toWhat + 1) - fromWhat;
 }
 
-size_t Board_count(struct Board* board, int cellType)
+size_t Board_count(struct Board* board, int32_t cellType)
 {
     size_t counter = 0;
     for (size_t i = 0; i < board->shape[0]; i++)
@@ -249,3 +249,20 @@ size_t Board_count(struct Board* board, int cellType)
     }
     return counter;
 }
+
+int Board_countInRange(struct Board* board, uint64_t* buff, int32_t buffSize,
+                       int32_t fromCellType, int32_t toCellType)
+{
+    if(fromCellType < board->cellMinValue || toCellType > board->cellMaxValue)
+        return -1;
+    if(toCellType - fromCellType > buffSize)
+        return -1;
+    
+    size_t iOverBuff = 0;
+    for(int32_t i = fromCellType; i <= toCellType; i++)
+    {
+        buff[iOverBuff++] = Board_count(board, i);
+    }
+    return 1;
+}
+
