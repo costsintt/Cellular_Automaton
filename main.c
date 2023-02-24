@@ -31,7 +31,7 @@ int main()
 
         App_clearWindow(app);
         kiss_window_draw(&app->main_window, app->renderer);
-        App_drawBoard(app, board);
+        App_drawBoard(app->main_window, app, board);
         kiss_window_draw(&app->buttonsWindow, app->renderer);
         graphWindow_draw(&app->graphWindow, app, 0, 1000, 0, 25000);
         kiss_button_draw(&app->pauseButton, app->renderer);

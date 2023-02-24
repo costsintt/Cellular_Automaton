@@ -203,7 +203,6 @@ void kiss_genResize(kiss_genData* widget)
 				widget->rect.h =  widget->rect.w / widget->hInW;
 
 		}
-		printf("%d\n", widget->rect.h);
 
 		
 		if(widget->type == BUTTON_TYPE)

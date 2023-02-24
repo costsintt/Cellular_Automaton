@@ -65,7 +65,7 @@ void App_init(struct App* self);
 bool App_updateWindow(struct App* self);
 
 
-void App_drawBoard(struct App* self, struct Board* board);
+void App_drawBoard(kiss_window window, struct App* self, struct Board* board);
 
 
 void App_takeKeyboardInput(struct App* self, struct Board* board);
