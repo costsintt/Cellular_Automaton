@@ -3016,8 +3016,8 @@
 							"fillColor": "#886868",
 							"fontColor": "#fafafa",
 							"font": "Arial;14;0",
-							"left": 256,
-							"top": 936,
+							"left": 288,
+							"top": 1024,
 							"width": 264,
 							"height": 160,
 							"text": "storage - some kind of linked list to store buffs"

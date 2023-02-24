@@ -1,5 +1,20 @@
 #include "App.h"
 
+static void drawThickPoint(struct App* self, uint64_t x, uint64_t y, uint64_t thickness,
+                           uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+{
+    SDL_SetRenderDrawColor(self->renderer, r, g, b, a);
+    uint64_t leftPix = thickness / 2;
+    uint64_t rightPix = thickness - leftPix;
+    for(uint64_t i = x - leftPix; i <= x + rightPix; i++)
+    {
+        for(uint64_t j = y - leftPix; j <= y + rightPix; j++)
+        {
+            SDL_RenderDrawPoint(self->renderer, i, j);
+        }
+    }
+}
+
 static void button_event(kiss_button *button, SDL_Event *e, int *draw, bool *pauseBoardIter)
 {
     if (kiss_button_event(button, e, draw)) *pauseBoardIter ^= 1;
@@ -15,18 +30,38 @@ static void button_save(kiss_button *button, SDL_Event *e, struct App* app)
     if (kiss_button_event(button, e, &app->draw)) app->copyBoard = true;
 }
 
-void graphWindow_draw(kiss_window* window, struct App* app)
+void graphWindow_draw(kiss_window* window, struct App* app,
+                      uint64_t fromX, uint64_t toX, uint64_t fromY, uint64_t toY)
 {
     kiss_window_draw(window, app->renderer);
-    SDL_Rect rect;
-    rect.x = window->base.rect.x * 1.2;
-    rect.y = window->base.rect.y * 1.2;
-    rect.w = 100;
-    rect.h = 100;
-    kiss_fillrect(app->renderer, &rect, kiss_makeColor(255, 255, 255, 255));
+    if(app->datas->len <= fromX || fromX >= toX) return;
+    
+
+    uint64_t* xs = calloc(app->datas->len, sizeof(uint64_t));
+    uint64_t* ys = calloc(app->datas->len, sizeof(uint64_t));
+
+
+    size_t i = 0;
+    uint64_t xPixels = 0;
+    uint64_t yPixels = 0;
+    double_t pixelsInOneY = (double_t)window->base.rect.h / (toY - fromY);
+    uint64_t y0InPixels = window->base.rect.y + window->base.rect.h;
+    for(uint64_t* data = app->datas->begin(app->datas);; data = app->datas->next(app->datas), i++)
+    {
+        if(fromX > i) continue;
+        for(uint8_t n = 0; n < app->lengthOfOneData; n++)
+        {
+            xPixels = window->base.rect.x + (double_t)window->base.rect.w / (toX - fromX) * (i - fromX);
+            yPixels = y0InPixels - pixelsInOneY * data[n];
+            drawThickPoint(app, xPixels, yPixels, 1, 255, 0, 255 / app->lengthOfOneData * (n + 1), 255);
+        }
+        if(app->datas->done(app->datas)) break;
+    }
+
 }
 
-struct App* App_cons(size_t screenHeight, size_t screenWidth, unsigned tickDuration)
+struct App* App_cons(size_t screenHeight, size_t screenWidth, unsigned tickDuration,
+                     uint8_t lengthOfOneData)
 {
     struct App* app = calloc(1, sizeof(struct App));
     app->screenHeight = screenHeight;
@@ -35,7 +70,8 @@ struct App* App_cons(size_t screenHeight, size_t screenWidth, unsigned tickDurat
                            APP_CAMERA_DEFAULT_VIEWWIDTHINCELLS,
                            APP_CAMERA_DEFAULT_X, APP_CAMERA_DEFAULT_Y);
     app->tickDuration = tickDuration;
-    app->dataStorage = sList_cons();
+    app->datas = sList_cons();
+    app->lengthOfOneData = lengthOfOneData;
 
     return app;
 }
@@ -57,16 +93,16 @@ void App_init(struct App* self)
                                self->screenWidth, self->screenHeight);
 
     kiss_window_new(&(self->main_window), NULL,
-                    0, 0, 180, 0, 255,
+                    0, 0, 100, 0, 255,
                     0, 0, 0, 0, 0.0, 1, 1,
                     0, 0, self->screenWidth, self->screenHeight);
     kiss_window_new(&(self->buttonsWindow), &self->main_window,
-                    0, 255, 0, 0, 255,
+                    0, 95, 95, 95, 200,
                     50, 97, 100, 6, 0.0, 1, 1,
                     0, 0, 0, 0);
     kiss_window_new(&(self->graphWindow), &self->main_window,
-                    0, 0, 0, 255, 255,
-                    85, 15, 30, 30, 0.0, 1, 1,
+                    1, 0, 0, 0, 75,
+                    74, 26, 50, 50, 0.0, 1, 1,
                     0, 0, 0, 0);
 
     kiss_button_new(&self->pauseButton, &self->buttonsWindow,
@@ -155,10 +191,10 @@ void App_drawBoard(struct App* self, struct Board* board)
 
     for(size_t i = self->cam->yInCells; i < max_i; i++)
     {
-        rect.h = (int)(y + cellHeight) - (int)(y);
+        rect.h = (int)(y + cellHeight) - (int)(y) - 1;
         for(size_t j = self->cam->xInCells; j < max_j; j++)
         {         
-            rect.w = (int)(x + cellWidth) - (int)(x);
+            rect.w = (int)(x + cellWidth) - (int)(x) - 1;
             rect.x = x;
             rect.y = y;
             if(board->grid[i][j])
@@ -191,7 +227,7 @@ void App_takeKeyboardInput(struct App* self, struct Board* board)
 
 void App_clearWindow(struct App* self)
 {
-    SDL_SetRenderDrawColor(self->renderer, 0, 50, 10, 0);
+    SDL_SetRenderDrawColor(self->renderer, 255, 0, 0, 0);
     SDL_RenderClear(self->renderer);
 }
 

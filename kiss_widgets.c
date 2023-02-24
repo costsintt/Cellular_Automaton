@@ -125,7 +125,7 @@ int kiss_window_draw(kiss_window *window, SDL_Renderer *renderer)
 	if(!window || !window->base.visible || !renderer) return 0;
 	kiss_fillrect(renderer, &window->base.rect, window->bg);
 	if(window->decorate)
-		kiss_decorate(renderer, &window->base.rect, kiss_makeColor(0, 0, 255, 255), kiss_edge);
+		kiss_decorate(renderer, &window->base.rect, kiss_makeColor(150, 150, 150, 255), -3);
 	return 1;
 }
 

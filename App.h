@@ -23,16 +23,13 @@ struct App
     int screenHeight;
     int screenWidth;
 
-    // float cellHeightInPix; //derived 
-    // float cellWidthInPix; //derived
-    //depricated; now they evaluated in draw function every frame.
-
     struct Camera* cam;
 
     unsigned tickDuration;
     unsigned ticksPassedToTheLatestUpdate; //derived
 
-    struct sList* dataStorage;
+    struct sList* datas;
+    uint8_t lengthOfOneData;
 
     SDL_Window* sdlWindow;
     SDL_Renderer* renderer;
@@ -52,9 +49,11 @@ struct App
     bool loadBoard;
 };
 
-void graphWindow_draw(kiss_window* window, struct App* app);
+void graphWindow_draw(kiss_window* window, struct App* app,
+                      uint64_t fromX, uint64_t toX, uint64_t fromY, uint64_t toY);
 
-struct App* App_cons(size_t screenHeight, size_t screenWidth, unsigned tickDuration);
+struct App* App_cons(size_t screenHeight, size_t screenWidth, unsigned tickDuration,
+                     uint8_t lengthOfOneData);
 
 
 void App_decons(struct App** app);

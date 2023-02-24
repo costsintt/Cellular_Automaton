@@ -130,7 +130,7 @@ int kiss_decorate(SDL_Renderer *renderer, SDL_Rect *rect, SDL_Color color, int e
 	if (!renderer || !rect || rect->w < d + 6 || rect->h < d + 6)
 		return -1;
 	SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
-	for (i = 0; i < 2; i++)
+	for (i = 0; i < 3; i++)
 	{
 		kiss_makerect(&outlinerect, rect->x + edge + i,
 			rect->y + edge + i, rect->w - d - i - i,
