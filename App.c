@@ -175,7 +175,6 @@ bool App_updateWindow(struct App* self)
 
 void App_drawBoard(kiss_window window, struct App* self, struct Board* board)
 {
-    SDL_SetRenderDrawColor(self->renderer, 255, 255, 255, 255);
     SDL_Rect rect;
     
     float cellHeight = (float)window.base.rect.h / self->cam->viewHeightInCells;
@@ -197,8 +196,22 @@ void App_drawBoard(kiss_window window, struct App* self, struct Board* board)
             rect.w = (int)(x + cellWidth) - (int)(x) - 1;
             rect.x = x;
             rect.y = y;
-            if(board->grid[i][j])
+            if(board->grid[i][j].type == 1)
+            {
+                SDL_SetRenderDrawColor(self->renderer, 255, 255, 255, 255);
                 SDL_RenderFillRect(self->renderer, &rect);
+            }
+            else if(board->grid[i][j].type == 2)
+            {
+                SDL_SetRenderDrawColor(self->renderer, 255, 155, 155, 255);
+                SDL_RenderFillRect(self->renderer, &rect);
+            }
+            else if(board->grid[i][j].type == 3)
+            {
+                SDL_SetRenderDrawColor(self->renderer, 255, 55, 55, 255);
+                SDL_RenderFillRect(self->renderer, &rect);
+            }
+                
             x += cellWidth;
         }
         y -= (float)cellHeight;
