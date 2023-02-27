@@ -96,6 +96,10 @@ void App_init(struct App* self)
                     0, 0, 100, 0, 255,
                     0, 0, 0, 0, 0.0, 1, 1,
                     0, 0, self->screenWidth, self->screenHeight);
+    kiss_window_new(&(self->test_window), &self->main_window,
+                    0, 0, 120, 25, 255,
+                    50, 50, 50, 50, 0.0, 1, 1,
+                    0, 0, 0, 0);
     kiss_window_new(&(self->buttonsWindow), &self->main_window,
                     0, 95, 95, 95, 200,
                     50, 97, 100, 6, 0.0, 1, 1,
@@ -148,6 +152,9 @@ bool App_updateWindow(struct App* self)
             self->main_window.base.rect.w = self->screenWidth;
             self->main_window.base.rect.h = self->screenHeight;
 
+            kiss_genResize((kiss_genData*)&self->test_window);
+            kiss_genRelocate((kiss_genData*)&self->test_window);
+
             kiss_genResize((kiss_genData*)&self->buttonsWindow);
             kiss_genRelocate((kiss_genData*)&self->buttonsWindow);
 
@@ -173,14 +180,15 @@ bool App_updateWindow(struct App* self)
 }
 
 
-void App_drawBoard(kiss_window window, struct App* self, struct Board* board)
+void App_drawBoard(kiss_window* window, struct App* self, struct Board* board)
 {
+    kiss_window_draw(window, self->renderer);
     SDL_Rect rect;
     
-    float cellHeight = (float)window.base.rect.h / self->cam->viewHeightInCells;
-    float cellWidth = (float)window.base.rect.w / self->cam->viewWidthInCells;
-    float x = (float)window.base.rect.x;
-    float y = (float)(window.base.rect.y + window.base.rect.h);
+    float cellHeight = (float)window->base.rect.h / self->cam->viewHeightInCells;
+    float cellWidth = (float)window->base.rect.w / self->cam->viewWidthInCells;
+    float x = (float)window->base.rect.x;
+    float y = (float)(window->base.rect.y + window->base.rect.h) - cellHeight;
 
     size_t max_i = self->cam->yInCells + self->cam->viewHeightInCells;
     size_t max_j = self->cam->xInCells + self->cam->viewWidthInCells;
@@ -215,7 +223,7 @@ void App_drawBoard(kiss_window window, struct App* self, struct Board* board)
             x += cellWidth;
         }
         y -= (float)cellHeight;
-        x = (float)window.base.rect.x;
+        x = (float)window->base.rect.x;
     }
     
 }

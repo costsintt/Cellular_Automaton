@@ -27,7 +27,7 @@ void copyGrid(struct Cell** gridToPaste, struct Cell** gridToCopy, size_t height
     {
         for(size_t j = 0; j < width; j++)
         {
-            Cell_copyPaste(&gridToPaste[i][j], &gridToCopy[i][j]);
+            gridToPaste[i][j] = gridToCopy[i][j];
         }
     }
 }
@@ -36,4 +36,11 @@ void copyGrid(struct Cell** gridToPaste, struct Cell** gridToCopy, size_t height
 uint8_t randomUInt(uint8_t from, uint8_t to)
 {
     return rand() % (to + 1) - from;
+}
+
+void Grid_swapCells(struct Cell** grid, size_t i, size_t j, size_t to_i, size_t to_j)
+{
+    struct Cell buff = grid[to_i][to_j];
+    grid[to_i][to_j] = grid[i][j];
+    grid[i][j] = buff;
 }

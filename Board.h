@@ -23,6 +23,7 @@ struct Cell
 struct Board
 {
     struct Cell** grid;
+    struct Cell** buffGrid;
     size_t shape[2];
 
     uint8_t counter[BOARD_COUNTER_DIMENSIONS];
@@ -74,6 +75,7 @@ size_t Board_count(struct Board* board, int32_t cellType);
 uint64_t* Board_countInRange(struct Board* board, size_t buffSize,
                        int32_t fromCellType, int32_t toCellType);
 
-void Cell_copyPaste(struct Cell* cellToPaste, struct Cell* cellToCopy);
+void Board_moveCellRandomly(struct Board* self, size_t i, size_t j);
+
 
 #endif
