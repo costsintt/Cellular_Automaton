@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdarg.h>
 
 #include "gridManipul.h"
 
@@ -16,8 +17,8 @@ struct Cell
     uint8_t type;
     uint64_t livedIterations;
 
-    uint32_t var1;
-    uint32_t var2;
+    uint8_t var1;
+    uint8_t var2;
     //... add more if needed
 };
 struct Board
@@ -27,9 +28,9 @@ struct Board
     size_t shape[2];
 
     uint8_t counter[BOARD_COUNTER_DIMENSIONS];
-    uint8_t cellMaxValue;
     uint8_t cellMinValue;
-
+    uint8_t cellMaxValue;
+    
     size_t iter;
     bool areBordersMovable;
 
@@ -68,7 +69,7 @@ void Board_nextIteration_gameOfLife(struct Board* self);
 
 void Board_fill(struct Board* board, int whatToFill);
 
-void Board_fillRandom(struct Board* board, int fromWhat, int toWhat);
+void Board_fillRandom(struct Board* board, size_t argCount, ...);
 
 size_t Board_count(struct Board* board, int32_t cellType);
 

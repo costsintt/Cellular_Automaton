@@ -11,19 +11,36 @@
 #define BOARD_DEFAULT_WIDTH 150
 #define BOARD_DEFAULT_HEIGHT 150
 
+
 int main()
 {
-    struct Board* board = Board_cons(25, 25, 0, 2, 0, 1);
-    struct Board* buffBoard; 
-    Board_fillRandom(board, 0, 2);
-    struct App* app = App_cons(800, 1200, 50, 3);
-    app->cam->viewHeightInCells = 25;
-    app->cam->viewWidthInCells = 25;
+    size_t boardHeight = 25;
+    size_t boardWidth = 25;
+
+    uint8_t cellMinValue = 0;
+    uint8_t cellMaxValue = 2;
+    uint8_t dataArrayLength = 3;
+
+    uint32_t screenHeight = 800;
+    uint32_t screenWidth = 1200;
+    uint32_t msecondsInTick = 50;
+    
+
+    struct Board* board = Board_cons(boardHeight, boardWidth, cellMinValue, cellMaxValue, 0, 0);
+    struct Board* buffBoard;
 
 
-    App_init(app);
-    SDL_SetRenderDrawBlendMode(app->renderer, SDL_BLENDMODE_BLEND);
-    app->pauseBoardIter = true;
+    // Board_fillRandom(board, 12,
+    //                  (struct Cell){1,0,0,0}, (struct Cell){2,0,0,0}, (struct Cell){1,0,0,0},
+    //                  (struct Cell){0,0,0,0}, (struct Cell){0,0,0,0}, (struct Cell){0,0,0,0},
+    //                  (struct Cell){0,0,0,0}, (struct Cell){0,0,0,0}, (struct Cell){0,0,0,0},
+    //                  (struct Cell){0,0,0,0}, (struct Cell){0,0,0,0}, (struct Cell){0,0,0,0}
+    //                 );
+    board->grid[0][0] = (struct Cell){1,0,10,0};
+
+    struct App* app = App_cons(screenHeight, screenWidth, msecondsInTick, dataArrayLength,
+                               board->shape[0], board->shape[1], 0, 0);
+
 
     while(App_updateWindow(app))
     {   
@@ -36,7 +53,6 @@ int main()
         kiss_button_draw(&app->pauseButton, app->renderer);
         kiss_button_draw(&app->loadButton, app->renderer);
         kiss_button_draw(&app->saveButton, app->renderer);
-        
         App_swapWindowBuffers(app);
 
         if(app->copyBoard)

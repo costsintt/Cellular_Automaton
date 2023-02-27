@@ -4,16 +4,13 @@
 struct Board* Board_cons(size_t height, size_t width, uint8_t cellMinValue, uint8_t cellMaxValue,
                          size_t iter, bool areBordersMovable)
 {
-    struct Cell** grid = createGrid(height, width);
-    struct Cell** buffGrid = createGrid(height, width);
-
     struct Board *board = calloc(1, sizeof(struct Board));
-    board->grid = grid;
-    board->buffGrid = buffGrid;
+    board->grid = createGrid(height, width);
+    board->buffGrid = createGrid(height, width);
     board->shape[0] = height;
     board->shape[1] = width;
-    board->cellMaxValue = cellMaxValue;
     board->cellMinValue = cellMinValue;
+    board->cellMaxValue = cellMaxValue;
     board->iter = iter;
     board->areBordersMovable = areBordersMovable;
     board->countNeighbors = &Board_countNeighbrs;
@@ -252,11 +249,26 @@ void Board_fill(struct Board* board, int whatToFill)
             board->grid[i][j].type = whatToFill;
 }
 
-void Board_fillRandom(struct Board* board, int fromWhat, int toWhat)
+void Board_fillRandom(struct Board* board, size_t argCount, ...)
 {
-    srand(board->shape[0] + board->shape[1]);
-    for(size_t i = 0; i < board->shape[0]; i++) for(size_t j = 0; j < board->shape[1]; j++)
-            board->grid[i][j].type = randomUInt(fromWhat, toWhat);
+    size_t buffSize = 16;
+    if(argCount > buffSize) return;
+
+    va_list args;
+    va_start(args, argCount);
+    struct Cell* buff = calloc(buffSize, sizeof(struct Cell));
+    for(size_t i = 0; i < argCount; i++)
+    {
+        buff[i] = va_arg(args, struct Cell);
+    }
+    for(size_t i = 0; i < board->shape[0]; i++)
+    {
+        for(size_t j = 0; j < board->shape[1]; j++)
+        {
+            board->grid[i][j] = buff[randomUInt(0, argCount - 1)];
+        }
+    }
+
 }
 
 size_t Board_count(struct Board* board, int32_t cellType)

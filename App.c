@@ -61,17 +61,20 @@ void graphWindow_draw(kiss_window* window, struct App* app,
 }
 
 struct App* App_cons(size_t screenHeight, size_t screenWidth, unsigned tickDuration,
-                     uint8_t lengthOfOneData)
+                     uint8_t lengthOfOneData, size_t camViewHeightInCells,
+                     size_t camViewWidthInCells, size_t camXInCells, size_t camYInCells)
 {
     struct App* app = calloc(1, sizeof(struct App));
     app->screenHeight = screenHeight;
     app->screenWidth = screenWidth;
-    app->cam = Camera_cons(APP_CAMERA_DEFAULT_VIEWHEIGHTINCELLS,
-                           APP_CAMERA_DEFAULT_VIEWWIDTHINCELLS,
-                           APP_CAMERA_DEFAULT_X, APP_CAMERA_DEFAULT_Y);
     app->tickDuration = tickDuration;
-    app->datas = sList_cons();
     app->lengthOfOneData = lengthOfOneData;
+
+    app->cam = Camera_cons(camViewHeightInCells, camViewWidthInCells, camXInCells, camYInCells);
+    
+    app->datas = sList_cons();
+
+    App_initDrawingThings(app);
 
     return app;
 }
@@ -85,12 +88,14 @@ void App_decons(struct App** app)
 }
 
 
-void App_init(struct App* self)
+void App_initDrawingThings(struct App* self)
 {
     kiss_array_new(&(self->objects));
 
     self->renderer = kiss_init(APP_WINDOW_NAME, &self->objects,
                                self->screenWidth, self->screenHeight);
+
+    SDL_SetRenderDrawBlendMode(self->renderer, SDL_BLENDMODE_BLEND);
 
     kiss_window_new(&(self->main_window), NULL,
                     0, 0, 100, 0, 255,
@@ -125,7 +130,7 @@ void App_init(struct App* self)
 
     self->keyboard = SDL_GetKeyboardState(NULL);
 
-    self->pauseBoardIter = false;
+    self->pauseBoardIter = true;
 }
 
 
