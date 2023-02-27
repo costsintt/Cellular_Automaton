@@ -5,6 +5,7 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <time.h>
 
 #include "kiss_sdl.h"
 
@@ -14,6 +15,7 @@
 
 int main()
 {
+    srand(time(NULL));
     size_t boardHeight = 25;
     size_t boardWidth = 25;
 
