@@ -49,11 +49,12 @@ void graphWindow_draw(kiss_window* window, struct App* app,
     for(uint64_t* data = app->datas->begin(app->datas);; data = app->datas->next(app->datas), i++)
     {
         if(fromX > i) continue;
-        for(uint8_t n = 0; n < app->lengthOfOneData; n++)
+        for(uint8_t n = 1; n < app->lengthOfOneData; n++)
         {
             xPixels = window->base.rect.x + (double_t)window->base.rect.w / (toX - fromX) * (i - fromX);
             yPixels = y0InPixels - pixelsInOneY * data[n];
-            drawThickPoint(app, xPixels, yPixels, 1, 255, 0, 255 / app->lengthOfOneData * (n + 1), 255);
+            drawThickPoint(app, xPixels, yPixels, 1,
+                           255*n, 125*n, 50*n, 255);
         }
         if(app->datas->done(app->datas)) break;
     }

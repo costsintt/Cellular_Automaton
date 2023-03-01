@@ -17,8 +17,8 @@ struct Cell
     uint8_t type;
     uint64_t livedIterations;
 
-    uint8_t var1;
-    uint8_t var2;
+    int32_t var1;
+    int32_t var2;
     //... add more if needed
 };
 struct Board
@@ -75,6 +75,9 @@ size_t Board_count(struct Board* board, int32_t cellType);
 
 uint64_t* Board_countInRange(struct Board* board, size_t buffSize,
                        int32_t fromCellType, int32_t toCellType);
+
+uint32_t Board_createCellRandomly(struct Board* self, struct Cell cellToCreate,
+                                  size_t i0, size_t j0);
 
 void Board_moveCellRandomly(struct Board* self, size_t i, size_t j);
 

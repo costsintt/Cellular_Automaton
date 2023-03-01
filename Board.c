@@ -200,23 +200,56 @@ void Board_nextIteration_preyAndPred(struct Board* self)
             {
                 Board_moveCellRandomly(self, i, j);
             }
-            else if(self->counter[1] == 7 || self->counter[2] == 7) self->grid[i][j].type = 0;
         }
     }
-    copyGrid(self->buffGrid, self->grid, self->shape[0], self->shape[1]);
+
     for(size_t i = 0; i < self->shape[0]; i++)
     {
         for(size_t j = 0; j < self->shape[1]; j++)
         {
             Board_countNeighbrs(self, i, j);
+
+            if(self->grid[i][j].type == 1)
+            {
+                if(self->grid[i][j].var1 > 15)
+                {
+                    if(self->counter[0])
+                    {
+                        Board_createCellRandomly(self,
+                        (struct Cell){self->grid[i][j].type, 0, 0, 0}, i, j);
+                        self->grid[i][j].var1 = 0;
+                    }
+                }
+                else
+                {
+                    self->grid[i][j].var1++;
+                    self->grid[i][j].var1 -= self->counter[2];
+                }
+            }
+
+            else if(self->grid[i][j].type == 2)
+            {
+                if(self->grid[i][j].var1 > 30)
+                {
+                    if(self->counter[0])
+                    {
+                        Board_createCellRandomly(self,
+                        (struct Cell){self->grid[i][j].type, 0, 15, 0}, i, j);
+                        self->grid[i][j].var1 -= 15;
+                    }
+                }
+                else
+                {
+                    if(self->counter[1]) self->grid[i][j].var1 += self->counter[1]*2;
+                    else self->grid[i][j].var1--;
+                }
+            }
+
+            if(self->grid[i][j].var1 < 0) self->grid[i][j] = (struct Cell){0,0,0,0};
             
         }
     }
 
-
-    struct Cell** buff = self->grid;
-    self->grid = self->buffGrid;
-    self->buffGrid = buff;
     self->iter++;
 }
 
@@ -296,11 +329,30 @@ uint64_t* Board_countInRange(struct Board* board, size_t buffSize,
     return buff;
 }
 
+uint32_t Board_createCellRandomly(struct Board* self, struct Cell cellToCreate,
+                                  size_t i0, size_t j0)
+{
+    //012 <-dir meaning
+    //7 3
+    //654
+    uint8_t dir = randomUInt(0, 7);
+    if(dir == 1 && i0 < self->shape[0] - 1 && j0 != 0 && self->grid[i0+1][j0-1].type == 0) self->grid[i0+1][j0-1] = cellToCreate;
+    else if(dir == 2 && i0 < self->shape[0] - 1 && self->grid[i0+1][j0].type == 0) self->grid[i0+1][j0] = cellToCreate;
+    else if(dir == 3 && i0 < self->shape[0] - 1 && j0 < self->shape[1] - 1 && self->grid[i0+1][j0+1].type == 0) self->grid[i0+1][j0+1] = cellToCreate;
+    else if(dir == 4 && j0 < self->shape[1] - 1 && self->grid[i0][j0+1].type == 0) self->grid[i0][j0+1] = cellToCreate;
+    else if(dir == 5 && i0 != 0 && j0 < self->shape[1] - 1 && self->grid[i0-1][j0+1].type == 0) self->grid[i0-1][j0+1] = cellToCreate;
+    else if(dir == 6 && i0 != 0 && self->grid[i0-1][j0].type == 0) self->grid[i0-1][j0] = cellToCreate;
+    else if(dir == 7 && i0 != 0 && j0 != 0 && self->grid[i0-1][j0-1].type == 0) self->grid[i0-1][j0-1] = cellToCreate;
+    else if(dir == 8 && j0 != 0 && self->grid[i0][j0-1].type == 0) self->grid[i0][j0-1] = cellToCreate;
+    else return -1;
+    return 1;
+}
+
 void Board_moveCellRandomly(struct Board* self, size_t i, size_t j)
 {   //123 <-dir meaning
     //804
     //765
-    uint8_t dir = randomUInt(0, 9);
+    uint8_t dir = randomUInt(0, 8);
     if(dir == 0) return;
     else if(dir == 1 && i < self->shape[0] - 1 && j != 0 && self->grid[i+1][j-1].type == 0) Grid_swapCells(self->grid, i, j, i+1, j-1);
     else if(dir == 2 && i < self->shape[0] - 1 && self->grid[i+1][j].type == 0) Grid_swapCells(self->grid, i, j, i+1, j);
@@ -312,31 +364,3 @@ void Board_moveCellRandomly(struct Board* self, size_t i, size_t j)
     else if(dir == 8 && j != 0 && self->grid[i][j-1].type == 0) Grid_swapCells(self->grid, i, j, i, j-1);
 
 }
-
-// void Board_moveCellRandomly(struct Board* self, size_t i, size_t j)
-// {
-//     Board_countNeighbrs(self, i, j);
-//     if(self->counter[0] && self->grid[i][j].type)
-//         {
-//             bool searchNewPosition = true;
-//             while(searchNewPosition)
-//             {
-//                 for(uint8_t n = 0; n < 3 && searchNewPosition; n++)
-//                 {
-//                     for(uint8_t m = 0; m < 3; m++)
-//                     {
-//                         if((n == 1 && m == 1) || i+n == 0 || j+m == 0 ||
-//                             i+n >= self->shape[0] || j+m >= self->shape[1]) continue;
-//                         if(!newGrid[i+n-1][j+m-1].type && !randomUInt(0, 9))
-//                         {
-//                             newGrid[i+n-1][j+m-1] = self->grid[i][j];
-//                             newGrid[i][j] = emptyCell;
-//                             searchNewPosition = false;
-//                             break;
-                        
-//                     {   
-//                 }
-//             }
-//         }
-//     }
-// }
