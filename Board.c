@@ -33,7 +33,7 @@ void Board_decons(struct Board** board)
 
 struct Board* Board_copy(struct Board *b)
 {
-    struct Board* newBoard = Board_cons(b->shape[0], b->shape[1], 0, 1,
+    struct Board* newBoard = Board_cons(b->shape[0], b->shape[1], b->cellMinValue, b->cellMaxValue,
                                         b->iter, b->areBordersMovable);
     copyGrid(newBoard->grid, b->grid, b->shape[0], b->shape[1]);
     copyGrid(newBoard->buffGrid, b->buffGrid, b->shape[0], b->shape[1]);
