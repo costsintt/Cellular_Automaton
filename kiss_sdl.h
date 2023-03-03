@@ -51,6 +51,7 @@
 #include <sys/stat.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #define KISS_MAX_LENGTH 200
 #define KISS_MIN_LENGTH 10
@@ -159,17 +160,6 @@ typedef struct kiss_button
 	kiss_image prelightimg;
 
 } kiss_button;
-
-typedef struct kiss_selectbutton
-{
-	int visible;
-	int focus;
-	SDL_Rect rect;
-	int selected;
-	kiss_image selectedimg;
-	kiss_image unselectedimg;
-	kiss_window *wdw;
-} kiss_selectbutton;
 
 typedef struct kiss_vscrollbar
 {
@@ -358,12 +348,6 @@ int kiss_button_new(kiss_button *button, kiss_window *wdw,
 					kiss_image normalimg, kiss_image activeimg, kiss_image prelightimg);
 int kiss_button_event(kiss_button *button, SDL_Event *event, int *draw);
 int kiss_button_draw(kiss_button *button, SDL_Renderer *renderer);
-int kiss_selectbutton_new(kiss_selectbutton *selectbutton, kiss_window *wdw,
-	int x, int y);
-int kiss_selectbutton_event(kiss_selectbutton *selectbutton,
-	SDL_Event *event, int *draw);
-int kiss_selectbutton_draw(kiss_selectbutton *selectbutton,
-	SDL_Renderer *renderer);
 int kiss_vscrollbar_new(kiss_vscrollbar *vscrollbar, kiss_window *wdw,
 	int x, int y, int h);
 int kiss_vscrollbar_event(kiss_vscrollbar *vscrollbar, SDL_Event *event,

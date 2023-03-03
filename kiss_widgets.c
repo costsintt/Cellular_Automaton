@@ -264,60 +264,6 @@ int kiss_button_event(kiss_button *button, SDL_Event *event, int *draw)
 }
 
 
-
-
-
-int kiss_selectbutton_new(kiss_selectbutton *selectbutton, kiss_window *wdw,
-	int x, int y)
-{
-	if (!selectbutton) return -1;
-	if (selectbutton->selectedimg.magic != KISS_MAGIC)
-		selectbutton->selectedimg = kiss_selected;
-	if (selectbutton->unselectedimg.magic != KISS_MAGIC)
-		selectbutton->unselectedimg = kiss_unselected;
-	kiss_makerect(&selectbutton->rect, x, y, selectbutton->selectedimg.w,
-		selectbutton->selectedimg.h);
-	selectbutton->selected = 0;
-	selectbutton->focus = 0;
-	selectbutton->wdw = wdw;
-	return 0;
-}
-
-int kiss_selectbutton_event(kiss_selectbutton *selectbutton,
-	SDL_Event *event, int *draw)
-{
-	if (!selectbutton || !selectbutton->visible || !event) return 0;
-	if (event->type == SDL_WINDOWEVENT &&
-		event->window.event == SDL_WINDOWEVENT_EXPOSED)
-		*draw = 1;
-	if (!selectbutton->focus && (!selectbutton->wdw ||
-		(selectbutton->wdw && !selectbutton->wdw->base.focus)))
-		return 0;
-	if (event->type == SDL_MOUSEBUTTONDOWN &&
-		kiss_pointinrect(event->button.x, event->button.y,
-		&selectbutton->rect)) {
-		selectbutton->selected ^= 1;
-		*draw = 1;
-		return 1;
-	}
-	return 0;
-}
-
-int kiss_selectbutton_draw(kiss_selectbutton *selectbutton,
-	SDL_Renderer *renderer)
-{
-	if (selectbutton && selectbutton->wdw)
-		selectbutton->visible = selectbutton->wdw->base.visible;
-	if (!selectbutton || !selectbutton->visible || !renderer) return 0;
-	if (selectbutton->selected)
-		kiss_renderimage(renderer, selectbutton->selectedimg,
-			selectbutton->rect.x, selectbutton->rect.y, NULL);
-	else
-		kiss_renderimage(renderer, selectbutton->unselectedimg,
-			selectbutton->rect.x, selectbutton->rect.y, NULL);
-	return 1;
-}
-
 int kiss_vscrollbar_new(kiss_vscrollbar *vscrollbar, kiss_window *wdw,
 	int x, int y, int h)
 {
