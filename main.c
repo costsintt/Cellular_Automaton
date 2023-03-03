@@ -59,6 +59,7 @@ int main()
         kiss_button_draw(&app->pauseButton, app->renderer);
         kiss_button_draw(&app->loadButton, app->renderer);
         kiss_button_draw(&app->saveButton, app->renderer);
+        kiss_button_draw(&app->nextIterButton, app->renderer);
         App_swapWindowBuffers(app);
 
         if(app->copyBoard)
@@ -72,12 +73,13 @@ int main()
             board = Board_copy(buffBoard);
             app->loadBoard = false;
         }
-        else if(!app->pauseBoardIter)
+        else if(!app->pauseBoardIter || app->goToNextIter)
         {
             app->datas->push(app->datas,
                              Board_countInRange(board, app->lengthOfOneData,
                                                 board->cellMinValue, board->cellMaxValue));
             board->nextIteration(board);
+            app->goToNextIter = false;
         }
         
         App_waitIfNeeded(app);

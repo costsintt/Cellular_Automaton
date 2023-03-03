@@ -40,11 +40,13 @@ struct App
     kiss_button pauseButton;
     kiss_button loadButton;
     kiss_button saveButton;
+    kiss_button nextIterButton;
 
     int draw; //make it bool
     bool pauseBoardIter;
     bool copyBoard;
     bool loadBoard;
+    bool goToNextIter;
 };
 
 void graphWindow_draw(kiss_window* window, struct App* app,

@@ -30,6 +30,11 @@ static void button_save(kiss_button *button, SDL_Event *e, struct App* app)
     if (kiss_button_event(button, e, &app->draw)) app->copyBoard = true;
 }
 
+static void button_nextIter(kiss_button *button, SDL_Event *e, struct App* app)
+{
+    if(kiss_button_event(button, e, &app->draw)) app->goToNextIter = true; 
+}
+
 void graphWindow_draw(kiss_window* window, struct App* app,
                       uint64_t fromX, uint64_t toX, uint64_t fromY, uint64_t toY)
 {
@@ -129,12 +134,16 @@ void App_initDrawingThings(struct App* self)
     kiss_button_new(&self->saveButton, &self->buttonsWindow,
                     60, 50, 5, 80, 1.0,
                     kiss_saveButtonNormal, kiss_saveButtonActive, kiss_saveButtonPreLight);
+    kiss_button_new(&self->nextIterButton, &self->buttonsWindow,
+                    70, 50, 5, 80, 1.0,
+                    kiss_nextIterButtonNormal, kiss_nextIterButtonActive, kiss_nextIterButtonPreLight);
 
     self->ticksPassedToTheLatestUpdate = SDL_GetTicks64();
 
     self->keyboard = SDL_GetKeyboardState(NULL);
 
     self->pauseBoardIter = true;
+    self->goToNextIter = false;
 }
 
 
@@ -149,6 +158,7 @@ bool App_updateWindow(struct App* self)
         button_event(&self->pauseButton, &event, &self->draw, &self->pauseBoardIter);
         button_load(&self->loadButton, &event, self);
         button_save(&self->saveButton, &event, self);
+        button_nextIter(&self->nextIterButton, &event, self);
         if(event.type == SDL_QUIT)
         {
             return false;
@@ -178,6 +188,9 @@ bool App_updateWindow(struct App* self)
 
             kiss_genResize((kiss_genData*)&self->saveButton);
             kiss_genRelocate((kiss_genData*)&self->saveButton);
+
+            kiss_genResize((kiss_genData*)&self->nextIterButton);
+            kiss_genRelocate((kiss_genData*)&self->nextIterButton);
 
             
         }

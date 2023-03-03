@@ -31,8 +31,9 @@ kiss_image kiss_normal, kiss_prelight, kiss_active, kiss_bar,
 	kiss_hslider, kiss_selected, kiss_unselected, kiss_combo,
 	
 	kiss_pauseButtonNormal, kiss_pauseButtonPreLight, kiss_pauseButtonActive,
-	   kiss_saveButtonNormal, kiss_saveButtonPreLight, kiss_saveButtonActive,
-	   kiss_loadButtonNormal, kiss_loadButtonPreLight, kiss_loadButtonActive;
+	kiss_saveButtonNormal, kiss_saveButtonPreLight, kiss_saveButtonActive,
+	kiss_loadButtonNormal, kiss_loadButtonPreLight, kiss_loadButtonActive,
+	kiss_nextIterButtonNormal, kiss_nextIterButtonPreLight, kiss_nextIterButtonActive;
 
 int kiss_screen_width, kiss_screen_height;
 int kiss_textfont_size = 15;
@@ -253,6 +254,13 @@ SDL_Renderer* kiss_init(char* title, kiss_array *a, int w, int h)
 	                    a, renderer);
 	r += kiss_image_new(&kiss_saveButtonPreLight, "../images/save_prelight.png",
 	                    a, renderer);
+	r += kiss_image_new(&kiss_nextIterButtonActive, "../images/nextIter_active.png",
+	                    a, renderer);
+	r += kiss_image_new(&kiss_nextIterButtonNormal, "../images/nextIter_normal.png",
+	                    a, renderer);
+	r += kiss_image_new(&kiss_nextIterButtonPreLight, "../images/nextIter_prelight.png",
+	                    a, renderer);
+	
 	
 	if (r)
 	{

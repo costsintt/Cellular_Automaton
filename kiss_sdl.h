@@ -287,7 +287,8 @@ extern kiss_image kiss_normal, kiss_prelight, kiss_active, kiss_bar,
 	   kiss_hslider, kiss_selected, kiss_unselected, kiss_combo,
 	   kiss_pauseButtonNormal, kiss_pauseButtonPreLight, kiss_pauseButtonActive,
 	   kiss_saveButtonNormal, kiss_saveButtonPreLight, kiss_saveButtonActive,
-	   kiss_loadButtonNormal, kiss_loadButtonPreLight, kiss_loadButtonActive;
+	   kiss_loadButtonNormal, kiss_loadButtonPreLight, kiss_loadButtonActive,
+	   kiss_nextIterButtonNormal, kiss_nextIterButtonPreLight, kiss_nextIterButtonActive;
 extern double kiss_spacing;
 extern int kiss_textfont_size, kiss_buttonfont_size;
 extern int kiss_click_interval, kiss_progress_interval;
