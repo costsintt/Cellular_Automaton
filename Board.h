@@ -67,7 +67,7 @@ void Board_nextIteration_preyAndPred(struct Board* self);
 
 //void Board_nextIteration_gameOfLife(struct Board* self);
 
-void Board_fill(struct Board* board, uint8_t whatToFill,
+void Board_fill(struct Board* board, struct Cell whomToFill,
                 size_t x0, size_t y0, size_t x1, size_t y1);
 
 void Board_fillRandom(struct Board* board, size_t argCount, ...);

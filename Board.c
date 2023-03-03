@@ -276,11 +276,11 @@ void Board_nextIteration_preyAndPred(struct Board* self)
 // }
 
 
-void Board_fill(struct Board* board, uint8_t whatToFill, size_t x0, size_t y0, size_t x1, size_t y1)
+void Board_fill(struct Board* board, struct Cell whomToFill, size_t x0, size_t y0, size_t x1, size_t y1)
 {
     for(size_t i = y0; i <= y1; i++)
         for(size_t j = x0; j <= x1; j++)
-            board->grid[i][j].type = whatToFill;
+            board->grid[i][j] = whomToFill;
 }
 
 void Board_fillRandom(struct Board* board, size_t argCount, ...)
