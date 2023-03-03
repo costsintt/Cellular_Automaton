@@ -12,8 +12,6 @@
 #include "Board.h"
 #include "eLists.h"
 
-#define APP_WINDOW_NAME "lololo"
-
 struct App
 {
     int screenHeight;
@@ -27,6 +25,8 @@ struct App
     struct sList* datas; //derived
     uint8_t lengthOfOneData;
     
+    char* name;
+
     //below visual shits
     SDL_Window* sdlWindow; //derived
     SDL_Renderer* renderer; //derived
@@ -52,7 +52,8 @@ void graphWindow_draw(kiss_window* window, struct App* app,
 
 struct App* App_cons(size_t screenHeight, size_t screenWidth, unsigned tickDuration,
                      uint8_t lengthOfOneData, size_t camViewHeightInCells,
-                     size_t camViewWidthInCells, size_t camXInCells, size_t camYInCells);
+                     size_t camViewWidthInCells, size_t camXInCells, size_t camYInCells,
+                     char* appName);
 
 
 void App_decons(struct App** app);

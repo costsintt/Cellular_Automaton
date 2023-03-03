@@ -63,13 +63,16 @@ void graphWindow_draw(kiss_window* window, struct App* app,
 
 struct App* App_cons(size_t screenHeight, size_t screenWidth, unsigned tickDuration,
                      uint8_t lengthOfOneData, size_t camViewHeightInCells,
-                     size_t camViewWidthInCells, size_t camXInCells, size_t camYInCells)
+                     size_t camViewWidthInCells, size_t camXInCells, size_t camYInCells,
+                     char* appName)
 {
     struct App* app = calloc(1, sizeof(struct App));
     app->screenHeight = screenHeight;
     app->screenWidth = screenWidth;
     app->tickDuration = tickDuration;
     app->lengthOfOneData = lengthOfOneData;
+
+    app->name = appName;
 
     app->cam = Camera_cons(camViewHeightInCells, camViewWidthInCells, camXInCells, camYInCells);
     
@@ -93,7 +96,7 @@ void App_initDrawingThings(struct App* self)
 {
     kiss_array_new(&(self->objects));
 
-    self->renderer = kiss_init(APP_WINDOW_NAME, &self->objects,
+    self->renderer = kiss_init(self->name, &self->objects,
                                self->screenWidth, self->screenHeight);
 
     SDL_SetRenderDrawBlendMode(self->renderer, SDL_BLENDMODE_BLEND);

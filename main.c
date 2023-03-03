@@ -46,7 +46,7 @@ int main()
     // board->grid[25][25] = (struct Cell){1,0,10,0};
 
     struct App* app = App_cons(screenHeight, screenWidth, msecondsInTick, dataArrayLength,
-                               board->shape[0], board->shape[1], 0, 0);
+                               board->shape[0], board->shape[1], 0, 0, "appName3000");
 
 
     while(App_updateWindow(app))
