@@ -70,7 +70,8 @@ int kiss_window_new(kiss_window *window, kiss_window *wdw,
 
 int kiss_button_new(kiss_button *button, kiss_window *wdw,
 	                int relX, int relY, int relSX, int relSY, float hInW,
-					kiss_image normalimg, kiss_image activeimg, kiss_image prelightimg)
+					kiss_image normalimg, kiss_image activeimg, kiss_image prelightimg,
+					bool isSticky)
 {
 	kiss_genData_new(&button->base, wdw, relX, relY, relSX, relSY, hInW, 0, 0, BUTTON_TYPE, button);
 
@@ -84,6 +85,7 @@ int kiss_button_new(kiss_button *button, kiss_window *wdw,
 	
 	button->active = 0;
 	button->prelight = 0;
+	button->isSticky = isSticky;
 	button->base.visible = 0;
 	button->base.focus = 0;
 	
@@ -233,15 +235,23 @@ int kiss_button_event(kiss_button *button, SDL_Event *event, int *draw)
 	if(event->type == SDL_MOUSEBUTTONDOWN &&
 	   kiss_pointinrect(event->button.x, event->button.y, &button->base.rect))
 	{
-		button->active = 1;
+		if(button->isSticky)
+		{
+			button->active = 1 - button->active;
+			return 1;
+		}
+		else button->active = 1;
 		*draw = 1;
 	}
 	else if(event->type == SDL_MOUSEBUTTONUP && kiss_pointinrect(event->button.x, event->button.y,
 		    &button->base.rect) && button->active)
 	{
-		button->active = 0;
-		*draw = 1;
-		return 1;
+		if(!button->isSticky)
+		{
+			button->active = 0;
+			*draw = 1;
+			return 1;
+		}
 	}
 	else if(event->type == SDL_MOUSEMOTION && kiss_pointinrect(event->motion.x, event->motion.y,
 		    &button->base.rect))
@@ -254,7 +264,7 @@ int kiss_button_event(kiss_button *button, SDL_Event *event, int *draw)
 	{
 		button->prelight = 0;
 		*draw = 1;
-		if(button->active)
+		if(!button->isSticky && button->active)
 		{
 			button->active = 0;
 			return 1;

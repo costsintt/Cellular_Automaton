@@ -15,9 +15,10 @@ static void drawThickPoint(struct App* self, uint64_t x, uint64_t y, uint64_t th
     }
 }
 
-static void button_event(kiss_button *button, SDL_Event *e, int *draw, bool *pauseBoardIter)
+static void button_pause(kiss_button *button, SDL_Event *e, int *draw, bool *pauseBoardIter)
 {
-    if (kiss_button_event(button, e, draw)) *pauseBoardIter ^= 1;
+    kiss_button_event(button, e, draw);
+    *pauseBoardIter = button->active;
 }
 
 static void button_load(kiss_button *button, SDL_Event *e, struct App* app)
@@ -125,18 +126,22 @@ void App_initDrawingThings(struct App* self)
 
     kiss_button_new(&self->pauseButton, &self->buttonsWindow,
                     50, 50, 5, 80, 1.0,
-                    kiss_pauseButtonNormal, kiss_pauseButtonActive, kiss_pauseButtonPreLight);
+                    kiss_pauseButtonNormal, kiss_pauseButtonActive,
+                    kiss_pauseButtonPreLight, true);
+    self->pauseButton.active = 1;
     
     kiss_button_new(&self->loadButton, &self->buttonsWindow,
                     40, 50, 5, 80, 1.0,
-                    kiss_loadButtonNormal, kiss_loadButtonActive, kiss_loadButtonPreLight);
+                    kiss_loadButtonNormal, kiss_loadButtonActive, kiss_loadButtonPreLight, false);
 
     kiss_button_new(&self->saveButton, &self->buttonsWindow,
                     60, 50, 5, 80, 1.0,
-                    kiss_saveButtonNormal, kiss_saveButtonActive, kiss_saveButtonPreLight);
+                    kiss_saveButtonNormal, kiss_saveButtonActive,
+                    kiss_saveButtonPreLight, false);
     kiss_button_new(&self->nextIterButton, &self->buttonsWindow,
                     70, 50, 5, 80, 1.0,
-                    kiss_nextIterButtonNormal, kiss_nextIterButtonActive, kiss_nextIterButtonPreLight);
+                    kiss_nextIterButtonNormal, kiss_nextIterButtonActive,
+                    kiss_nextIterButtonPreLight, false);
 
     self->ticksPassedToTheLatestUpdate = SDL_GetTicks64();
 
@@ -155,7 +160,7 @@ bool App_updateWindow(struct App* self)
         kiss_window_event(&self->main_window, &event, &self->draw);
         kiss_window_event(&self->buttonsWindow, &event, &self->draw);
         kiss_window_event(&self->graphWindow, &event, &self->draw);
-        button_event(&self->pauseButton, &event, &self->draw, &self->pauseBoardIter);
+        button_pause(&self->pauseButton, &event, &self->draw, &self->pauseBoardIter);
         button_load(&self->loadButton, &event, self);
         button_save(&self->saveButton, &event, self);
         button_nextIter(&self->nextIterButton, &event, self);

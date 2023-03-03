@@ -154,6 +154,7 @@ typedef struct kiss_button
 	
 	int active; //derived
 	int prelight; //derived
+	bool isSticky;
 
 	kiss_image normalimg;
 	kiss_image activeimg;
@@ -345,7 +346,8 @@ void kiss_genRelocate(kiss_genData* button);
 void kiss_genResize(kiss_genData* button);
 int kiss_button_new(kiss_button *button, kiss_window *wdw,
 	                int relX, int relY, int relSX, int relSY, float hInW,
-					kiss_image normalimg, kiss_image activeimg, kiss_image prelightimg);
+					kiss_image normalimg, kiss_image activeimg, kiss_image prelightimg,
+					bool isSticky);
 int kiss_button_event(kiss_button *button, SDL_Event *event, int *draw);
 int kiss_button_draw(kiss_button *button, SDL_Renderer *renderer);
 int kiss_vscrollbar_new(kiss_vscrollbar *vscrollbar, kiss_window *wdw,
