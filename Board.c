@@ -2,7 +2,7 @@
 
 
 struct Board* Board_cons(size_t height, size_t width, uint8_t cellMinValue, uint8_t cellMaxValue,
-                         size_t iter, bool areBordersMovable)
+                         uint64_t iter, bool areBordersMovable)
 {
     struct Board *board = calloc(1, sizeof(struct Board));
     board->grid = createGrid(height, width);
@@ -276,9 +276,10 @@ void Board_nextIteration_preyAndPred(struct Board* self)
 // }
 
 
-void Board_fill(struct Board* board, int whatToFill)
+void Board_fill(struct Board* board, uint8_t whatToFill, size_t x0, size_t y0, size_t x1, size_t y1)
 {
-    for(size_t i = 0; i < board->shape[0]; i++) for(size_t j = 0; j < board->shape[1]; j++)
+    for(size_t i = y0; i <= y1; i++)
+        for(size_t j = x0; j <= x1; j++)
             board->grid[i][j].type = whatToFill;
 }
 
@@ -304,9 +305,9 @@ void Board_fillRandom(struct Board* board, size_t argCount, ...)
 
 }
 
-size_t Board_count(struct Board* board, int32_t cellType)
+uint64_t Board_count(struct Board* board, int8_t cellType)
 {
-    size_t counter = 0;
+    uint64_t counter = 0;
     for (size_t i = 0; i < board->shape[0]; i++)
     {
         for (size_t j = 0; j < board->shape[1]; j++)
@@ -322,7 +323,7 @@ uint64_t* Board_countInRange(struct Board* board, size_t buffSize,
 {   
     uint64_t* buff = calloc(buffSize, sizeof(uint64_t));
     size_t iOverBuff = 0;
-    for(int32_t i = fromCellType; i <= toCellType; i++)
+    for(uint8_t i = fromCellType; i <= toCellType; i++)
     {
         buff[iOverBuff++] = Board_count(board, i);
     }
@@ -336,7 +337,8 @@ uint32_t Board_createCellRandomly(struct Board* self, struct Cell cellToCreate,
     //7 3
     //654
     uint8_t dir = randomUInt(0, 7);
-    if(dir == 1 && i0 < self->shape[0] - 1 && j0 != 0 && self->grid[i0+1][j0-1].type == 0) self->grid[i0+1][j0-1] = cellToCreate;
+    if(dir == 0) return 0;
+    else if(dir == 1 && i0 < self->shape[0] - 1 && j0 != 0 && self->grid[i0+1][j0-1].type == 0) self->grid[i0+1][j0-1] = cellToCreate;
     else if(dir == 2 && i0 < self->shape[0] - 1 && self->grid[i0+1][j0].type == 0) self->grid[i0+1][j0] = cellToCreate;
     else if(dir == 3 && i0 < self->shape[0] - 1 && j0 < self->shape[1] - 1 && self->grid[i0+1][j0+1].type == 0) self->grid[i0+1][j0+1] = cellToCreate;
     else if(dir == 4 && j0 < self->shape[1] - 1 && self->grid[i0][j0+1].type == 0) self->grid[i0][j0+1] = cellToCreate;
@@ -344,16 +346,16 @@ uint32_t Board_createCellRandomly(struct Board* self, struct Cell cellToCreate,
     else if(dir == 6 && i0 != 0 && self->grid[i0-1][j0].type == 0) self->grid[i0-1][j0] = cellToCreate;
     else if(dir == 7 && i0 != 0 && j0 != 0 && self->grid[i0-1][j0-1].type == 0) self->grid[i0-1][j0-1] = cellToCreate;
     else if(dir == 8 && j0 != 0 && self->grid[i0][j0-1].type == 0) self->grid[i0][j0-1] = cellToCreate;
-    else return -1;
-    return 1;
+    else return 1;
+    return 0;
 }
 
-void Board_moveCellRandomly(struct Board* self, size_t i, size_t j)
+uint32_t Board_moveCellRandomly(struct Board* self, size_t i, size_t j)
 {   //123 <-dir meaning
     //804
     //765
     uint8_t dir = randomUInt(0, 8);
-    if(dir == 0) return;
+    if(dir == 0) return 0;
     else if(dir == 1 && i < self->shape[0] - 1 && j != 0 && self->grid[i+1][j-1].type == 0) Grid_swapCells(self->grid, i, j, i+1, j-1);
     else if(dir == 2 && i < self->shape[0] - 1 && self->grid[i+1][j].type == 0) Grid_swapCells(self->grid, i, j, i+1, j);
     else if(dir == 3 && i < self->shape[0] - 1 && j < self->shape[1] - 1 && self->grid[i+1][j+1].type == 0) Grid_swapCells(self->grid, i, j, i+1, j+1);
@@ -362,5 +364,6 @@ void Board_moveCellRandomly(struct Board* self, size_t i, size_t j)
     else if(dir == 6 && i != 0 && self->grid[i-1][j].type == 0) Grid_swapCells(self->grid, i, j, i-1, j);
     else if(dir == 7 && i != 0 && j != 0 && self->grid[i-1][j-1].type == 0) Grid_swapCells(self->grid, i, j, i-1, j-1);
     else if(dir == 8 && j != 0 && self->grid[i][j-1].type == 0) Grid_swapCells(self->grid, i, j, i, j-1);
-
+    else return 1;
+    return 0;
 }

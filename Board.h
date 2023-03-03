@@ -31,7 +31,7 @@ struct Board
     uint8_t cellMinValue;
     uint8_t cellMaxValue;
     
-    size_t iter;
+    uint64_t iter;
     bool areBordersMovable;
 
     void(*countNeighbors)(struct Board* self, size_t i, size_t j);
@@ -41,7 +41,7 @@ struct Board
 
 
 struct Board* Board_cons(size_t height, size_t width, uint8_t cellMinValue, uint8_t cellMaxValue,
-                         size_t iter, bool areBordersMovable);
+                         uint64_t iter, bool areBordersMovable);
 
 
 void Board_decons(struct Board** board);
@@ -53,10 +53,10 @@ struct Board* Board_copy(struct Board* board);
 void Board_print(struct Board* board);
 
 
-void Board_expand(struct Board* board, size_t n);
+// void Board_expand(struct Board* board, size_t n);
 
 
-void Board_shrink(struct Board* b);
+// void Board_shrink(struct Board* b);
 
 
 void Board_countNeighbrs(struct Board* self, size_t i, size_t j);
@@ -65,13 +65,14 @@ void Board_countNeighbrs(struct Board* self, size_t i, size_t j);
 
 void Board_nextIteration_preyAndPred(struct Board* self);
 
-void Board_nextIteration_gameOfLife(struct Board* self);
+//void Board_nextIteration_gameOfLife(struct Board* self);
 
-void Board_fill(struct Board* board, int whatToFill);
+void Board_fill(struct Board* board, uint8_t whatToFill,
+                size_t x0, size_t y0, size_t x1, size_t y1);
 
 void Board_fillRandom(struct Board* board, size_t argCount, ...);
 
-size_t Board_count(struct Board* board, int32_t cellType);
+uint64_t Board_count(struct Board* board, int8_t cellType);
 
 uint64_t* Board_countInRange(struct Board* board, size_t buffSize,
                        int32_t fromCellType, int32_t toCellType);
@@ -79,7 +80,7 @@ uint64_t* Board_countInRange(struct Board* board, size_t buffSize,
 uint32_t Board_createCellRandomly(struct Board* self, struct Cell cellToCreate,
                                   size_t i0, size_t j0);
 
-void Board_moveCellRandomly(struct Board* self, size_t i, size_t j);
+uint32_t Board_moveCellRandomly(struct Board* self, size_t i, size_t j);
 
 
 #endif
