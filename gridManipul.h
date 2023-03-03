@@ -4,8 +4,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#include "Board.h"
-
+#include "Cell.h"
 
 struct Cell** createGrid(size_t height, size_t width);
 

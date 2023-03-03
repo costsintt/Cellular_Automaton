@@ -6,21 +6,13 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdarg.h>
-
 #include "gridManipul.h"
+#include "Cell.h"
 
 #define BOARD_COUNTER_DIMENSIONS 8
 
 struct Board;
-struct Cell
-{
-    uint8_t type;
-    uint64_t livedIterations;
 
-    int32_t var1;
-    int32_t var2;
-    //... add more if needed
-};
 struct Board
 {
     struct Cell** grid;
