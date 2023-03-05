@@ -260,49 +260,67 @@ void App_drawBoard(kiss_window* window, struct App* self, struct Board* board)
 
 void App_updateCamera(struct App* self, struct Board* board)
 {
-    unsigned camVel = 1;
-
-    bool notClipThroughYCeil = self->cam->yInCells + self->cam->viewHeightInCells + camVel <= board->shape[0];
-    bool notClipThroughYFloor = self->cam->yInCells >= camVel;
-    bool notClipThroughXCeil = self->cam->xInCells + self->cam->viewWidthInCells + camVel <= board->shape[1];
-    bool notClipThoughXFloor = self->cam->xInCells >= camVel;
-    bool viewSizeNotBiggerThanBoard = self->cam->viewHeightInCells < board->shape[0] && self->cam->viewWidthInCells < board->shape[1];
+    uint32_t camVel = 1;
+    uint32_t zoomVel = 1;
     
-    if(self->keyboard[SDL_SCANCODE_W] && notClipThroughYCeil)
-      self->cam->yInCells += camVel;
+    if(self->keyboard[SDL_SCANCODE_W] && !App_willCameraClip(self, board, camVel, DIR_UPWARD))
+        self->cam->yInCells += camVel;
 
-    if(self->keyboard[SDL_SCANCODE_S] && notClipThroughYFloor)
+    if(self->keyboard[SDL_SCANCODE_S] && !App_willCameraClip(self, board, camVel, DIR_DOWNWARD))
         self->cam->yInCells -= camVel;
 
-    if(self->keyboard[SDL_SCANCODE_D] && notClipThroughXCeil)
+    if(self->keyboard[SDL_SCANCODE_D] && !App_willCameraClip(self, board, camVel, DIR_RIGHTWARD))
         self->cam->xInCells += camVel;
 
-    if(self->keyboard[SDL_SCANCODE_A] && notClipThoughXFloor)
+    if(self->keyboard[SDL_SCANCODE_A] && !App_willCameraClip(self, board, camVel, DIR_LEFTWARD))
         self->cam->xInCells -= camVel;
 
-    if(self->keyboard[SDL_SCANCODE_Q] && self->cam->viewHeightInCells > 1 &&
-       self->cam->viewWidthInCells > 1)
+
+    if(self->keyboard[SDL_SCANCODE_Q] && self->cam->viewHeightInCells > zoomVel
+    && self->cam->viewWidthInCells > zoomVel)
     {
-        self->cam->viewHeightInCells -= 1;
-        self->cam->viewWidthInCells -= 1;
+        self->cam->viewHeightInCells -= zoomVel;
+        self->cam->viewWidthInCells -= zoomVel;
+        if(self->cam->viewWidthInCells % 2
+           && !App_willCameraClip(self, board, zoomVel, DIR_RIGHTWARD)
+           && !App_willCameraClip(self, board, zoomVel - 1, DIR_LEFTWARD))
+        {
+            self->cam->xInCells += zoomVel;   
+        }
+        if(self->cam->viewHeightInCells % 2
+           && !App_willCameraClip(self, board, zoomVel, DIR_UPWARD)
+           && !App_willCameraClip(self, board, zoomVel - 1, DIR_DOWNWARD))
+        {
+            self->cam->yInCells += zoomVel;   
+        }
     }
 
-    if(self->keyboard[SDL_SCANCODE_E] && viewSizeNotBiggerThanBoard)
+    if(self->keyboard[SDL_SCANCODE_E]
+    && self->cam->viewHeightInCells + zoomVel <= board->shape[0]
+    && self->cam->viewWidthInCells + zoomVel <= board->shape[1])
     {
-        self->cam->viewHeightInCells += 1;
-        self->cam->viewWidthInCells += 1;
+        self->cam->viewHeightInCells += zoomVel;
+        self->cam->viewWidthInCells += zoomVel;
+        if(self->cam->viewWidthInCells % 2
+           && !App_willCameraClip(self, board, zoomVel, DIR_RIGHTWARD)
+           && !App_willCameraClip(self, board, zoomVel, DIR_LEFTWARD))
+        {
+            self->cam->xInCells -= zoomVel;   
+        }
+        if(self->cam->viewHeightInCells % 2
+           && !App_willCameraClip(self, board, zoomVel, DIR_UPWARD)
+           && !App_willCameraClip(self, board, zoomVel, DIR_DOWNWARD))
+        {
+            self->cam->yInCells -= zoomVel;   
+        }
     }
 
-    while(self->cam->yInCells + self->cam->viewHeightInCells > board->shape[0])
-    {
+    while(App_willCameraClip(self, board, 0, DIR_UPWARD))
         self->cam->yInCells--;
-        break;
-    }
-    while(self->cam->xInCells + self->cam->viewWidthInCells > board->shape[1])
-    {
+    while(App_willCameraClip(self, board, 0, DIR_RIGHTWARD))
         self->cam->xInCells--;
-        break;
-    }
+
+    
 }
 
 
@@ -323,4 +341,32 @@ void App_waitIfNeeded(struct App* self)
 {
     uint64_t ticksPassed = SDL_GetTicks64() - self->ticksPassedToTheLatestUpdate;
     SDL_Delay(ticksPassed < self->tickDuration ? self->tickDuration - ticksPassed : 0);
+}
+
+bool App_willCameraClip(struct App* self, struct Board* board,
+                        size_t vel, uint8_t dir)
+{
+    switch(dir)
+    {
+        case DIR_RIGHTWARD:
+        if(self->cam->xInCells + self->cam->viewWidthInCells + vel > board->shape[1]) 
+            return 1;
+        break;
+
+        case DIR_UPWARD:
+        if(self->cam->yInCells + self->cam->viewHeightInCells + vel > board->shape[0])
+            return 1;
+        break;
+
+        case DIR_LEFTWARD:
+        if(self->cam->xInCells < vel)
+            return 1;
+        break;
+
+        case DIR_DOWNWARD:
+        if(self->cam->yInCells < vel)
+            return 1;
+        break;
+    }
+    return 0;
 }

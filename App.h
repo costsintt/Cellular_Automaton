@@ -12,6 +12,8 @@
 #include "Board.h"
 #include "eLists.h"
 
+enum DIRECTIONS {DIR_UPWARD, DIR_DOWNWARD, DIR_RIGHTWARD, DIR_LEFTWARD};
+
 struct App
 {
     int screenHeight;
@@ -82,6 +84,8 @@ void App_swapWindowBuffers(struct App* self);
 void App_waitIfNeeded(struct App* self);
 
 
+bool App_willCameraClip(struct App* self, struct Board* board,
+                        size_t vel, uint8_t dir);
 
 
 #endif
