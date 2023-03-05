@@ -51,7 +51,7 @@ int main()
 
     while(App_updateWindow(app))
     {   
-        App_takeKeyboardInput(app, board);
+        App_updateCamera(app, board);
         App_clearWindow(app);
         App_drawBoard(&app->main_window, app, board);
         kiss_window_draw(&app->buttonsWindow, app->renderer);
