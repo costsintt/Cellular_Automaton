@@ -258,30 +258,50 @@ void App_drawBoard(kiss_window* window, struct App* self, struct Board* board)
 }
 
 
-void App_takeKeyboardInput(struct App* self, struct Board* board)
+void App_updateCamera(struct App* self, struct Board* board)
 {
     unsigned camVel = 1;
-    if(self->keyboard[SDL_SCANCODE_LSHIFT]) camVel = 8;
-    if(self->keyboard[SDL_SCANCODE_W] &&
-       self->cam->yInCells + self->cam->viewHeightInCells + camVel <= board->shape[0])
-        self->cam->yInCells += camVel;
-    if(self->keyboard[SDL_SCANCODE_S] && self->cam->yInCells >= camVel)
+
+    bool notClipThroughYCeil = self->cam->yInCells + self->cam->viewHeightInCells + camVel <= board->shape[0];
+    bool notClipThroughYFloor = self->cam->yInCells >= camVel;
+    bool notClipThroughXCeil = self->cam->xInCells + self->cam->viewWidthInCells + camVel <= board->shape[1];
+    bool notClipThoughXFloor = self->cam->xInCells >= camVel;
+    bool viewSizeNotBiggerThanBoard = self->cam->viewHeightInCells < board->shape[0] && self->cam->viewWidthInCells < board->shape[1];
+    
+    if(self->keyboard[SDL_SCANCODE_W] && notClipThroughYCeil)
+      self->cam->yInCells += camVel;
+
+    if(self->keyboard[SDL_SCANCODE_S] && notClipThroughYFloor)
         self->cam->yInCells -= camVel;
-    if(self->keyboard[SDL_SCANCODE_A] && self->cam->xInCells >= camVel)
-        self->cam->xInCells -= camVel;
-    if(self->keyboard[SDL_SCANCODE_D] &&
-       self->cam->xInCells + self->cam->viewWidthInCells + camVel <= board->shape[1])
+
+    if(self->keyboard[SDL_SCANCODE_D] && notClipThroughXCeil)
         self->cam->xInCells += camVel;
+
+    if(self->keyboard[SDL_SCANCODE_A] && notClipThoughXFloor)
+        self->cam->xInCells -= camVel;
+
     if(self->keyboard[SDL_SCANCODE_Q] && self->cam->viewHeightInCells > 1 &&
        self->cam->viewWidthInCells > 1)
     {
         self->cam->viewHeightInCells -= 1;
         self->cam->viewWidthInCells -= 1;
     }
-    if(self->keyboard[SDL_SCANCODE_E])
+
+    if(self->keyboard[SDL_SCANCODE_E] && viewSizeNotBiggerThanBoard)
     {
         self->cam->viewHeightInCells += 1;
         self->cam->viewWidthInCells += 1;
+    }
+
+    while(self->cam->yInCells + self->cam->viewHeightInCells > board->shape[0])
+    {
+        self->cam->yInCells--;
+        break;
+    }
+    while(self->cam->xInCells + self->cam->viewWidthInCells > board->shape[1])
+    {
+        self->cam->xInCells--;
+        break;
     }
 }
 
